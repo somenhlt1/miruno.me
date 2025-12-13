@@ -16,10 +16,10 @@
             theme: {
                 extend: {
                     colors: {
-                        miruno: { // Changed color palette name to 'miruno'
-                            dark: '#0f1014',       // Matching the dark app bg
-                            card: '#1e2126',       // Slightly lighter for cards
-                            accent: '#00d6a3',     // The teal/green play button color
+                        miruno: {
+                            dark: '#0f1014',
+                            card: '#1e2126',
+                            accent: '#00d6a3',
                             accentHover: '#00b58a'
                         }
                     },
@@ -37,13 +37,10 @@
             color: white;
         }
         
-        /* Custom subtle gradient for background */
         .hero-bg {
-            /* Using the miruno accent color for the glow */
             background: radial-gradient(circle at 50% 0%, rgba(0, 214, 163, 0.15) 0%, rgba(15, 16, 20, 0) 50%);
         }
 
-        /* Mockup Phone Frame styling */
         .phone-frame {
             border: 8px solid #2d3036;
             border-radius: 40px;
@@ -78,9 +75,9 @@
             <span class="text-xl font-bold tracking-tight">Miruno</span>
         </div>
         <div class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
-            <a href="#" class="hover:text-white transition">Features</a>
-            <a href="#" class="hover:text-white transition">Pricing</a>
-            <a href="#" class="hover:text-white transition">Support</a>
+            <a href="#features" class="hover:text-white transition">Features</a>
+            <a href="#pricing" class="hover:text-white transition">Pricing</a>
+            <a href="#support" class="hover:text-white transition">Support</a>
         </div>
         <button class="border border-gray-600 px-5 py-2 rounded-full text-sm font-medium hover:border-miruno-accent hover:text-miruno-accent transition">
             Log In
@@ -126,12 +123,10 @@
                 </div>
             </div>
 
-        
-
         </div>
     </section>
 
-    <section class="py-20 bg-miruno-card border-t border-gray-800">
+    <section id="features" class="py-20 bg-miruno-card border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16">
                 <h2 class="text-3xl font-bold mb-4">Mileage Tracking, Simplified</h2>
@@ -184,9 +179,9 @@
     <footer class="py-12 border-t border-gray-800 text-center text-gray-500 text-sm">
         <p>&copy; 2024 Miruno Tracking. All rights reserved.</p>
         <div class="mt-4 flex justify-center gap-4">
-            <a href="#" class="hover:text-white">Privacy Policy</a>
+            <a href="privacy.html" class="hover:text-white">Privacy Policy</a>
             <span class="text-gray-700">|</span>
-            <a href="#" class="hover:text-white">Terms of Service</a>
+            <a href="terms.html" class="hover:text-white">Terms of Service</a>
         </div>
     </footer>
 
