@@ -629,11 +629,25 @@ async function deleteItem() {
             return;
         }
 
+        // Grab image_url before deleting the row
+        const item = allFetchedItems.find(i => i.id === parseInt(id));
+        const imageUrl = item?.image_url || null;
+
         const { error } = await supabaseClient
             .from('wishlist_items')
             .delete()
             .eq('id', id);
         if (error) throw error;
+
+        // Delete image from storage if it was uploaded to our bucket
+        if (imageUrl) {
+            const bucketPrefix = `/object/public/${config.STORAGE_BUCKET}/`;
+            const idx = imageUrl.indexOf(bucketPrefix);
+            if (idx !== -1) {
+                const storagePath = imageUrl.slice(idx + bucketPrefix.length);
+                await supabaseClient.storage.from(config.STORAGE_BUCKET).remove([storagePath]);
+            }
+        }
 
         closeItemForm();
         await fetchItems();
