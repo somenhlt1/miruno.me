@@ -455,6 +455,68 @@ function lockAdmin() {
     showToast('🔒 Admin mode locked.');
 }
 
+// ── Image Upload ────────────────────────────────────────────
+
+async function uploadImageToStorage(file) {
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const path = `items/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+    const { error } = await supabaseClient.storage
+        .from(config.STORAGE_BUCKET)
+        .upload(path, file, { upsert: false });
+    if (error) throw error;
+
+    const { data } = supabaseClient.storage
+        .from(config.STORAGE_BUCKET)
+        .getPublicUrl(path);
+    return data.publicUrl;
+}
+
+function updateImagePreview(url) {
+    const preview = document.getElementById('form-image-preview');
+    if (!preview) return;
+    if (url) {
+        preview.src = url;
+        preview.classList.remove('hidden');
+    } else {
+        preview.src = '';
+        preview.classList.add('hidden');
+    }
+}
+
+// Wire up image file picker
+document.getElementById('form-image-file').addEventListener('change', async (e) => {
+    const file   = e.target.files[0];
+    const status = document.getElementById('image-upload-status');
+    if (!file) return;
+
+    if (useMockData) {
+        status.textContent = '⚠️ Connect Supabase to upload images.';
+        status.className = 'upload-status error';
+        return;
+    }
+
+    status.textContent = '⏳ Uploading…';
+    status.className = 'upload-status uploading';
+
+    try {
+        const publicUrl = await uploadImageToStorage(file);
+        document.getElementById('form-image-url').value = publicUrl;
+        updateImagePreview(publicUrl);
+        status.textContent = '✅ Uploaded!';
+        status.className = 'upload-status success';
+    } catch (err) {
+        status.textContent = '❌ Upload failed: ' + err.message;
+        status.className = 'upload-status error';
+        console.error(err);
+    }
+});
+
+// Update preview when URL is typed manually
+document.getElementById('form-image-url').addEventListener('input', (e) => {
+    updateImagePreview(e.target.value.trim());
+});
+
 // ── Item Form ──────────────────────────────────────────────
 
 function openItemForm(id) {
@@ -465,6 +527,9 @@ function openItemForm(id) {
     const delBtn  = document.getElementById('delete-item-btn');
 
     document.getElementById('item-form').reset();
+    document.getElementById('image-upload-status').textContent = '';
+    document.getElementById('image-upload-status').className = 'upload-status';
+    updateImagePreview('');
 
     if (id === null) {
         heading.textContent = '➕ Add Item';
@@ -482,6 +547,7 @@ function openItemForm(id) {
         document.getElementById('form-price').value       = item.price        != null ? item.price : '';
         document.getElementById('form-category').value    = item.category     || '';
         delBtn.classList.remove('hidden');
+        updateImagePreview(item.image_url || '');
     }
 
     modal.classList.remove('hidden');

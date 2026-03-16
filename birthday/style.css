@@ -652,3 +652,54 @@ body.admin-unlocked .admin-edit-btn { display: block; }
     .card-image { height: 160px; }
     .card-title { font-size: 1.05rem; }
 }
+
+/* ─── Image Upload (Admin Form) ────────────── */
+.image-upload-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.4rem;
+}
+
+#form-image-file {
+    display: none;
+}
+
+.upload-file-btn {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    background: rgba(88, 166, 255, 0.15);
+    border: 1px solid var(--accent-color);
+    border-radius: 6px;
+    color: var(--accent-color);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+.upload-file-btn:hover { background: rgba(88, 166, 255, 0.28); }
+
+.upload-status {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+.upload-status.uploading { color: var(--accent-color); }
+.upload-status.success   { color: #3fb950; }
+.upload-status.error     { color: #f85149; }
+
+.form-label-hint {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+}
+
+.image-preview {
+    display: block;
+    margin-top: 0.6rem;
+    max-width: 100%;
+    max-height: 160px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    object-fit: contain;
+    background: rgba(255,255,255,0.04);
+}

@@ -103,8 +103,15 @@
                 <label class="form-label">Product URL
                     <input type="url" id="form-url" class="modal-input" placeholder="https://...">
                 </label>
-                <label class="form-label">Image URL
+                <label class="form-label">Image
+                    <div class="image-upload-row">
+                        <label class="upload-file-btn" for="form-image-file">📁 Upload Image</label>
+                        <input type="file" id="form-image-file" accept="image/*">
+                        <span id="image-upload-status" class="upload-status"></span>
+                    </div>
+                    <div class="form-label-hint">Or paste a URL directly:</div>
                     <input type="url" id="form-image-url" class="modal-input" placeholder="https://...">
+                    <img id="form-image-preview" src="" alt="Preview" class="image-preview hidden">
                 </label>
                 <div class="form-row">
                     <label class="form-label">Price ($)
