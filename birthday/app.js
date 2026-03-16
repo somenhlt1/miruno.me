@@ -233,7 +233,7 @@ function renderCurrentPage(append) {
                 <h3 class="card-title">${item.title}</h3>
                 ${item.description ? `<p class="card-description">${item.description}</p>` : ''}
                 ${item.url ? `<a href="${item.url}" target="_blank" rel="noopener noreferrer" class="item-link">Xem Sản Phẩm ↗️</a>` : ''}
-                ${item.price ? `<div class="card-price">$${item.price.toFixed(2)}</div>` : ''}
+                ${item.price ? `<div class="card-price">${item.price.toLocaleString('vi-VN')}₫</div>` : ''}
                 <button class="btn"></button>
             </div>
             <button class="admin-edit-btn" onclick="openItemForm(${item.id})">✏️ Edit</button>
