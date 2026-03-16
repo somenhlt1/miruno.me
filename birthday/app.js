@@ -645,7 +645,12 @@ async function deleteItem() {
             const idx = imageUrl.indexOf(bucketPrefix);
             if (idx !== -1) {
                 const storagePath = imageUrl.slice(idx + bucketPrefix.length);
-                await supabaseClient.storage.from(config.STORAGE_BUCKET).remove([storagePath]);
+                console.log('[Storage] Deleting path:', storagePath);
+                const { error: storageError } = await supabaseClient.storage.from(config.STORAGE_BUCKET).remove([storagePath]);
+                if (storageError) console.error('[Storage] Delete error:', storageError);
+                else console.log('[Storage] Deleted successfully.');
+            } else {
+                console.log('[Storage] Image is external URL, skipping delete:', imageUrl);
             }
         }
 
