@@ -115,7 +115,7 @@ async function fetchItems() {
             const { data: items, error } = await supabaseClient
                 .from('wishlist_items')
                 .select('*')
-                .order('id', { ascending: true });
+                .order('id', { ascending: false });
             if (error) throw error;
             allFetchedItems = items;
         }
@@ -582,12 +582,11 @@ async function submitItemForm(e) {
                 if (item) Object.assign(item, patch);
             } else {
                 const newId = Math.max(0, ...allFetchedItems.map(i => i.id)) + 1;
-                allFetchedItems.push({ id: newId, is_selected: false, claimer_id: null, ...patch });
+                allFetchedItems.unshift({ id: newId, is_selected: false, claimer_id: null, ...patch });
             }
-            filteredItems = [...allFetchedItems];
             closeItemForm();
-            renderCurrentPage(false);
-            updateCounter();
+            currentPage = 1;
+            applyFiltersAndSearch();
             showToast(id ? '✅ Item updated.' : '✅ Item added.');
             return;
         }
@@ -623,10 +622,9 @@ async function deleteItem() {
         if (useMockData) {
             const idx = allFetchedItems.findIndex(i => i.id === parseInt(id));
             if (idx !== -1) allFetchedItems.splice(idx, 1);
-            filteredItems = [...allFetchedItems];
             closeItemForm();
-            renderCurrentPage(false);
-            updateCounter();
+            currentPage = 1;
+            applyFiltersAndSearch();
             showToast('🗑️ Item deleted.');
             return;
         }
