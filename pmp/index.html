@@ -1,0 +1,1341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Operating Agreement</title>
+<style>
+  :root {
+    --ink: #1b2733;
+    --muted: #5f6b78;
+    --rule: #d9dfe5;
+    --accent: #2a7f7a;
+    --accent-soft: #e8f3f2;
+    --warn: #8e2f25;
+    --warn-soft: #fbedea;
+    --field: #f6f8fa;
+    --paper: #ffffff;
+    --bg: #eef1f4;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 11.5pt/1.55 Georgia, "Times New Roman", serif;
+  }
+  .toolbar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;
+    padding: 10px 16px;
+    background: #16324f; color: #fff;
+    font: 14px/1.4 "Segoe UI", system-ui, sans-serif;
+  }
+  .toolbar .hint { opacity: .85; font-size: 13px; }
+  .toolbar button {
+    font: 600 14px "Segoe UI", system-ui, sans-serif;
+    border: 0; border-radius: 6px; padding: 8px 14px; cursor: pointer; white-space: nowrap;
+    background: #2a7f7a; color: #fff;
+  }
+  .toolbar button.secondary { background: transparent; border: 1px solid rgba(255,255,255,.5); }
+  .toolbar .tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .toolbar button[aria-pressed="true"] { background: #c77c1e; }
+  .edit-only { display: none; gap: 8px; }
+  body.editing .edit-only { display: inline-flex; }
+  .edit-banner {
+    display: none;
+    font: 13px/1.5 "Segoe UI", system-ui, sans-serif;
+    background: #fdf5ea; border-bottom: 2px solid #c77c1e; padding: 8px 16px; color: #4a2f08;
+  }
+  body.editing .edit-banner { display: block; }
+  body.editing #doc { outline: 2px dashed #c77c1e; outline-offset: 6px; }
+  body.editing #doc p:hover, body.editing #doc li:hover, body.editing #doc h2:hover, body.editing #doc h3:hover { background: #fffaf2; }
+  .edited-note {
+    display: none; max-width: 8.5in; margin: 12px auto -12px; padding: 0 4px;
+    font: 12px "Segoe UI", system-ui, sans-serif; color: #7a4a0e;
+  }
+  body.has-edits .edited-note { display: block; }
+  [contenteditable="true"]:focus { outline: none; }
+  #pctWarn { color: #8e2f25; }
+  .tbl-label { font-size: 12px; opacity: .8; margin-left: 6px; align-self: center; }
+  #askOverlay {
+    display: none; position: fixed; inset: 0; z-index: 50; background: rgba(15, 25, 35, .45);
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  #askOverlay.show { display: flex; }
+  #askBox {
+    background: #fff; color: #1b2733; border-radius: 10px; max-width: 440px; width: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3); padding: 18px 18px 14px;
+    font: 14px/1.5 "Segoe UI", system-ui, sans-serif;
+  }
+  #askMsg { white-space: pre-wrap; margin: 0 0 14px; }
+  #askBtns { display: flex; gap: 8px; justify-content: flex-end; }
+  #askBtns button { font: 600 14px "Segoe UI", system-ui, sans-serif; border-radius: 6px; padding: 8px 14px; cursor: pointer; border: 1px solid #9aa5b1; background: #fff; color: #1b2733; }
+  #askBtns button.ok { background: #b4483c; border-color: #b4483c; color: #fff; }
+  #toast {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 40;
+    background: #16324f; color: #fff; border-radius: 8px; padding: 10px 16px; max-width: calc(100vw - 32px);
+    font: 14px/1.4 "Segoe UI", system-ui, sans-serif; box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  #toast.show { opacity: 1; }
+  #cellTools {
+    display: none; position: absolute; z-index: 20; gap: 10px; align-items: center; flex-wrap: wrap;
+    padding: 6px 8px; border-radius: 8px; background: #16324f; box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    font: 12px/1.2 "Segoe UI", system-ui, sans-serif; color: #fff; max-width: calc(100vw - 16px);
+  }
+  #cellTools.show { display: flex; }
+  #cellTools .ct-group { display: inline-flex; gap: 4px; align-items: center; }
+  #cellTools .ct-label { opacity: .75; margin-right: 2px; }
+  #cellTools button {
+    font: 600 12px "Segoe UI", system-ui, sans-serif; white-space: nowrap; cursor: pointer;
+    border: 1px solid rgba(255,255,255,.45); background: transparent; color: #fff; border-radius: 5px; padding: 4px 8px;
+  }
+  #cellTools button:hover { background: rgba(255,255,255,.15); }
+  #cellTools button.ct-danger { border-color: #e9a59c; color: #ffd9d3; }
+  #cellTools button:disabled { opacity: .35; cursor: default; }
+  body.editing #doc .col-sel { background: #fff4e3; }
+  body.editing #doc tr.row-sel > td, body.editing #doc tr.row-sel > th { box-shadow: inset 0 -2px 0 #c77c1e; }
+  body.editing #doc td:hover, body.editing #doc th:hover { box-shadow: inset 0 0 0 2px #e9c48f; }
+  .page {
+    max-width: 8.5in; margin: 24px auto; padding: 0.9in 0.95in;
+    background: var(--paper); box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  }
+  h1 { font-size: 22pt; text-align: center; margin: 0 0 4px; letter-spacing: .5px; }
+  .subtitle { text-align: center; color: var(--muted); margin: 0 0 22px; }
+  h2 {
+    font-size: 13pt; text-transform: uppercase; letter-spacing: .6px;
+    margin: 28px 0 10px; padding-bottom: 4px; border-bottom: 1.5px solid var(--ink);
+    break-after: avoid;
+  }
+  h3 { font-size: 12pt; margin: 18px 0 6px; break-after: avoid; }
+  p { margin: 0 0 10px; }
+  ol, ul { margin: 0 0 10px; padding-left: 24px; }
+  li { margin-bottom: 5px; }
+  .sec { font-weight: bold; }
+  .notice {
+    font: 13px/1.5 "Segoe UI", system-ui, sans-serif;
+    background: var(--warn-soft); border-left: 4px solid var(--warn);
+    padding: 12px 14px; margin: 0 0 22px; color: #3a1d18;
+  }
+  .howto {
+    font: 13px/1.5 "Segoe UI", system-ui, sans-serif;
+    background: var(--accent-soft); border-left: 4px solid var(--accent);
+    padding: 12px 14px; margin: 0 0 22px;
+  }
+  .howto ol { margin: 6px 0 0; }
+  input.f, textarea.f {
+    font: inherit; color: var(--ink);
+    border: 0; border-bottom: 1px solid var(--ink);
+    background: var(--field); padding: 0 4px; min-width: 60px; max-width: 100%;
+  }
+  input.f.w-s { width: 90px; } input.f.w-m { width: 190px; } input.f.w-l { width: 320px; } input.f.w-xl { width: 100%; }
+  input.f:focus { outline: 2px solid var(--accent); background: #fff; }
+  .opt { display: block; margin: 4px 0 4px 6px; }
+  .opt input { margin-right: 6px; transform: translateY(1px); }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 10.5pt; }
+  th, td { border: 1px solid #9aa5b1; padding: 6px 7px; vertical-align: top; text-align: left; }
+  th { background: #f1f3f5; font-size: 9.5pt; text-transform: uppercase; letter-spacing: .3px; }
+  td input.f { width: 100%; background: transparent; border-bottom: 0; }
+  .total td { font-weight: bold; background: #f7f8f9; }
+  .role { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; margin: 12px 0; break-inside: avoid; }
+  .role .role-title { font-weight: bold; margin-bottom: 4px; }
+  .role ul { margin-bottom: 4px; }
+  .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 34px; margin-top: 14px; }
+  .sig { break-inside: avoid; }
+  .sig .line { border-bottom: 1px solid var(--ink); height: 42px; }
+  .sig .lbl { font-size: 9.5pt; color: var(--muted); margin-top: 3px; }
+  .sig .row { display: flex; gap: 10px; margin-top: 8px; font-size: 10.5pt; }
+  .sig .row { align-items: baseline; }
+  .sig .row input.f { flex: 1; width: auto; min-width: 0; }
+  .break { break-before: page; }
+  .small { font-size: 10pt; color: var(--muted); }
+  .center { text-align: center; }
+  @media (max-width: 700px) {
+    .page { margin: 0; padding: 22px 16px; box-shadow: none; }
+    .sig-grid { grid-template-columns: 1fr; }
+    input.f.w-l, input.f.w-m { width: 100%; }
+    table { font-size: 9.5pt; }
+  }
+  @media print {
+    @page { size: letter; margin: 0.8in 0.85in; }
+    body { background: #fff; font-size: 11pt; }
+    .toolbar, .howto, .no-print { display: none !important; }
+    .page { margin: 0; padding: 0; box-shadow: none; max-width: none; }
+    input.f, textarea.f { background: transparent; }
+    input[type=checkbox] { accent-color: #000; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <span class="hint" id="hint">Type in the shaded blanks. To change the wording itself, click <b>Edit text</b>. Everything saves in this browser.</span>
+  <span class="tools">
+    <button type="button" id="editBtn" aria-pressed="false">Edit text</button>
+    <span class="edit-only">
+      <button type="button" class="secondary" id="boldBtn" title="Bold (Ctrl+B)"><b>B</b></button>
+      <button type="button" class="secondary" id="undoBtn" title="Undo (Ctrl+Z)">Undo</button>
+      <button type="button" class="secondary" id="redoBtn" title="Redo (Ctrl+Y)">Redo</button>
+      <button type="button" class="secondary" id="addArticleBtn" title="Add a new numbered article before the signature page">+ Article</button>
+      <button type="button" class="secondary" id="addSectionBtn" title="Add a numbered section below where your cursor is">+ Section</button>
+      <button type="button" class="secondary" id="addBulletBtn" title="Add a bullet point below where your cursor is">+ Bullet</button>
+      <button type="button" class="secondary" id="addSigBtn" title="Add a signature block next to the one your cursor is in">+ Signature</button>
+      <button type="button" class="secondary" id="removeBtn" title="Delete the paragraph, heading or bullet where your cursor is">Remove</button>
+      <span class="tbl-label">Table:</span>
+      <button type="button" class="secondary" id="addRowBtn" title="Add a row below the row your cursor is in">+ Row</button>
+      <button type="button" class="secondary" id="delRowBtn" title="Delete the row your cursor is in">&minus; Row</button>
+      <button type="button" class="secondary" id="addColBtn" title="Add a column to the right of the cell your cursor is in">+ Column</button>
+      <button type="button" class="secondary" id="delColBtn" title="Delete the column your cursor is in">&minus; Column</button>
+      <button type="button" class="secondary" id="resetTextBtn">Reset wording</button>
+    </span>
+    <button type="button" class="secondary" id="downloadBtn" title="Save a copy of this file with your edits and entries">Download copy</button>
+    <button type="button" class="secondary" id="clearBtn">Clear entries</button>
+    <button type="button" id="printBtn">Print / Save PDF</button>
+  </span>
+</div>
+<div class="edit-banner no-print" id="editBanner">
+  <b>Editing wording.</b> Click any text and type. <b>+ Article</b> adds a new article before the signatures;
+  <b>+ Section</b> and <b>+ Bullet</b> add below where your cursor is; <b>Remove</b> deletes the item your cursor is in (inside a signature block, just that block); <b>+ Signature</b> adds one. Click any table cell to get column and row buttons right on the table.
+  Ctrl+B bolds; <b>Undo</b>/Ctrl+Z and <b>Redo</b>/Ctrl+Y work for typing and for every button. Changes save automatically. Tell your attorney about any changes you make.
+</div>
+<p class="edited-note no-print" id="editedNote">This copy has wording changes made in the browser.</p>
+
+<div id="askOverlay" class="no-print" role="dialog" aria-modal="true" aria-labelledby="askMsg">
+  <div id="askBox"><p id="askMsg"></p><div id="askBtns"><button type="button" id="askNo">Cancel</button><button type="button" class="ok" id="askYes">Delete</button></div></div>
+</div>
+<div id="toast" class="no-print" role="status" aria-live="polite"></div>
+
+<main class="page" id="doc">
+
+  <div class="notice no-print">
+    <b>Draft template &mdash; not legal advice.</b> This agreement was prepared as a starting point for a four-member
+    Virginia limited liability company. Before anyone signs, have a <b>Virginia-licensed business attorney</b> review it,
+    and have a <b>CPA</b> review the tax sections (Articles 5 and 12). Laws change, and your attorney may recommend changes
+    for your situation.
+  </div>
+
+  <div class="howto no-print">
+    <b>How to complete it</b>
+    <ol>
+      <li>Fill in the company details on this page and the members in <b>Schedule A</b>. Names typed there fill in the signature blocks automatically.</li>
+      <li>Tick one box wherever you see a choice (management style, tie-breaker, vesting, and so on).</li>
+      <li>Bring the printed draft to your attorney. After review, each member signs and dates the signature page, Exhibit 1 (initial resolutions) and, if married, Exhibit 2 (spousal consent).</li>
+      <li>Keep the signed original with the company records. Give each member a copy. Banks usually ask for it when opening the business account.</li>
+    </ol>
+  </div>
+
+  <h1>Operating Agreement</h1>
+  <p class="subtitle">of <input class="f w-l sync" data-key="company" placeholder="Company name, LLC" aria-label="Company name"><br>
+  a Virginia Limited Liability Company</p>
+
+  <p>This Operating Agreement (the &ldquo;<b>Agreement</b>&rdquo;) is made effective as of
+  <input class="f w-m sync" data-key="effective" placeholder="Month Day, Year" aria-label="Effective date">
+  (the &ldquo;<b>Effective Date</b>&rdquo;) by and among the persons listed in <b>Schedule A</b> (each a &ldquo;<b>Member</b>&rdquo;
+  and together the &ldquo;<b>Members</b>&rdquo;) and <input class="f w-l sync" data-key="company" placeholder="Company name, LLC" aria-label="Company name">
+  (the &ldquo;<b>Company</b>&rdquo;). The Members agree as follows:</p>
+
+  <!-- ARTICLE 1 -->
+  <h2>Article 1 &mdash; Formation</h2>
+  <p><span class="sec">1.1 Formation.</span> The Company was formed as a Virginia limited liability company by filing Articles of
+  Organization with the Virginia State Corporation Commission (the &ldquo;<b>SCC</b>&rdquo;) on
+  <input class="f w-m" data-key="formed" placeholder="filing date" aria-label="Formation date">, SCC ID number
+  <input class="f w-m" data-key="sccid" placeholder="SCC ID" aria-label="SCC ID">. The rights and duties of the Members are governed by
+  this Agreement and the Virginia Limited Liability Company Act, Va. Code &sect; 13.1-1000 et seq. (the &ldquo;<b>Act</b>&rdquo;).
+  Where this Agreement and the Act differ, this Agreement controls to the extent the Act allows.</p>
+  <p><span class="sec">1.2 Name.</span> The Company&rsquo;s name is the name shown above. The Company may do business under other
+  names approved by a Majority Vote, after filing any required assumed-name certificate.</p>
+  <p><span class="sec">1.3 Principal Office.</span> The Company&rsquo;s principal office is
+  <input class="f w-xl" data-key="office" placeholder="Street address, city, VA ZIP" aria-label="Principal office">, or another place chosen by a Majority Vote.</p>
+  <p><span class="sec">1.4 Registered Agent.</span> The Company&rsquo;s registered agent is
+  <input class="f w-l" data-key="agent" placeholder="Name of agent or service" aria-label="Registered agent"> at
+  <input class="f w-xl" data-key="agentaddr" placeholder="Virginia street address (no P.O. box)" aria-label="Registered office">.</p>
+  <p><span class="sec">1.5 Purpose.</span> The Company&rsquo;s purpose is to import, store, distribute, and sell food products,
+  beverages, and related restaurant and grocery supplies, including products sourced from Vietnam, at wholesale and retail,
+  and to engage in any other lawful business permitted under the Act.</p>
+  <p><span class="sec">1.6 Term.</span> The Company began on the date its Articles of Organization were filed and continues until
+  dissolved under Article 15.</p>
+  <p><span class="sec">1.7 No State-Law Partnership.</span> The Members intend that the Company not be a partnership or joint venture
+  for any purpose other than federal and state income tax, and no Member is a partner of another Member for any other purpose.</p>
+
+  <!-- ARTICLE 2 -->
+  <h2>Article 2 &mdash; Definitions</h2>
+  <ul>
+    <li><b>Percentage Interest</b> &mdash; each Member&rsquo;s ownership share shown in Schedule A, as updated under this Agreement.</li>
+    <li><b>Majority Vote</b> &mdash; approval of Members holding <b>more than 50%</b> of all Percentage Interests.</li>
+    <li><b>Supermajority Vote</b> &mdash; approval of Members holding <b>at least 75%</b> of all Percentage Interests.</li>
+    <li><b>Unanimous Vote</b> &mdash; approval of all Members, not counting a Member whose own conduct or interest is being voted on where this Agreement says so.</li>
+    <li><b>Capital Contribution</b> &mdash; money or property a Member contributes to the Company in exchange for an ownership interest (not a loan).</li>
+    <li><b>Member Loan</b> &mdash; money a Member lends to the Company under a written note, repaid before distributions to Members.</li>
+    <li><b>Triggering Event</b> &mdash; an event listed in Section 11.1 that allows or requires the purchase of a Member&rsquo;s interest.</li>
+    <li><b>Fair Value</b> &mdash; the value of a Member&rsquo;s interest determined under Section 11.4.</li>
+  </ul>
+
+  <!-- ARTICLE 3 -->
+  <h2>Article 3 &mdash; Members and Capital</h2>
+  <p><span class="sec">3.1 Initial Contributions.</span> Each Member will contribute the money, property, or services shown in
+  Schedule A by the date shown there. Each Member&rsquo;s Percentage Interest is shown in Schedule A.</p>
+  <p><span class="sec">3.2 Capital or Loan.</span> Every amount a Member puts into the Company must be recorded in writing as either a
+  Capital Contribution or a Member Loan at the time it is made. If not recorded, it is treated as a Capital Contribution.</p>
+  <p><span class="sec">3.3 Additional Capital.</span> No Member is required to contribute more money unless approved by a
+  <b>Supermajority Vote</b>, in which case each Member is asked to contribute in proportion to its Percentage Interest within
+  <input class="f w-s" data-key="calldays" placeholder="30" aria-label="Days to contribute"> days. If a Member does not contribute
+  its share (a &ldquo;<b>Non-Contributing Member</b>&rdquo;), the contributing Members may choose either to:</p>
+  <ol type="a">
+    <li>treat the amounts they cover as Member Loans to the Company bearing interest at
+    <input class="f w-s" data-key="loanrate" placeholder="8%" aria-label="Loan interest rate"> per year; or</li>
+    <li>treat those amounts as Capital Contributions and adjust all Percentage Interests in proportion to total Capital Contributions made.</li>
+  </ol>
+  <p><span class="sec">3.4 No Interest; No Withdrawal.</span> No Member earns interest on Capital Contributions or may withdraw
+  capital, except as this Agreement provides.</p>
+  <p><span class="sec">3.5 Capital Accounts.</span> The Company will keep a separate capital account for each Member under
+  U.S. Treasury Regulations &sect; 1.704-1(b), as administered by the Company&rsquo;s CPA.</p>
+  <p><span class="sec">3.6 Limited Liability.</span> No Member is personally liable for the debts, obligations, or liabilities of the
+  Company solely because of being a Member, except as required by law or as that Member separately agrees in writing.</p>
+
+  <h3>3.7 Vesting of Ownership (choose one)</h3>
+  <label class="opt"><input type="checkbox" data-key="vest-none"> <b>No vesting.</b> Each Member fully owns its Percentage Interest from the Effective Date.</label>
+  <label class="opt"><input type="checkbox" data-key="vest-yes"> <b>Vesting applies.</b> The part of each Member&rsquo;s Percentage Interest
+  received for future work vests over <input class="f w-s" data-key="vestyears" placeholder="3" aria-label="Vesting years"> years in equal
+  monthly installments, after a <input class="f w-s" data-key="cliff" placeholder="12" aria-label="Cliff months">-month cliff. If a Member
+  leaves before full vesting, the Company may buy back the unvested part for what the Member paid for it (if anything). Ownership
+  bought with cash is always fully vested.</label>
+
+  <!-- ARTICLE 4 -->
+  <h2>Article 4 &mdash; Allocations and Distributions</h2>
+  <p><span class="sec">4.1 Profits and Losses.</span> Profits, losses, and tax items are allocated among the Members according to
+  their Percentage Interests, subject to any allocations the Company&rsquo;s CPA determines are required by the Internal Revenue Code.</p>
+  <p><span class="sec">4.2 Distributions.</span> Distributions of available cash are made only when approved by a Majority Vote,
+  and always in proportion to Percentage Interests. Before any distribution, the Company must keep a cash reserve of at least
+  <input class="f w-m" data-key="reserve" placeholder="three months of expenses" aria-label="Cash reserve"> and must have repaid any
+  Member Loans then due.</p>
+  <p><span class="sec">4.3 Tax Distributions.</span> To the extent cash is available after the reserve in Section 4.2, the Company
+  will try to distribute to each Member, by each estimated-tax due date, enough cash to pay the estimated federal and state
+  income tax on that Member&rsquo;s share of Company taxable income, using an assumed combined rate of
+  <input class="f w-s" data-key="taxrate" placeholder="35%" aria-label="Assumed tax rate">.</p>
+  <p><span class="sec">4.4 Limits.</span> No distribution may be made if, after it, the Company could not pay its debts as they come
+  due in the ordinary course, or its total assets would be less than its total liabilities, as provided in the Act. A Member who
+  knowingly receives an improper distribution must return it.</p>
+
+  <!-- ARTICLE 5 -->
+  <h2>Article 5 &mdash; Management</h2>
+  <h3>5.1 Management Style (choose one)</h3>
+  <label class="opt"><input type="checkbox" data-key="mgmt-member"> <b>Member-managed.</b> All Members manage the Company together.
+  Each Member is an agent of the Company for ordinary business within the limits of this Agreement.</label>
+  <label class="opt"><input type="checkbox" data-key="mgmt-manager"> <b>Manager-managed.</b> The Company is managed by
+  <input class="f w-l" data-key="managers" placeholder="name(s) of Manager(s)" aria-label="Managers">, who may be removed or replaced by a
+  Majority Vote. Members who are not Managers are not agents of the Company. (The Articles of Organization must match this choice.)</label>
+
+  <p><span class="sec">5.2 Ordinary Decisions.</span> Day-to-day decisions within the approved budget may be made by the Member
+  or Manager responsible for that area under <b>Schedule B</b>. Any other ordinary decision requires a Majority Vote.</p>
+  <p><span class="sec">5.3 Spending Limit.</span> Any single expense or commitment over
+  <input class="f w-s" data-key="spendlimit" placeholder="$5,000" aria-label="Spending limit"> requires written approval
+  (email is enough) of at least <b>two Members</b>, unless already approved as part of an annual budget.</p>
+  <p><span class="sec">5.4 Major Decisions.</span> The following require a <b>Supermajority Vote</b>:</p>
+  <ol type="a">
+    <li>placing any purchase order for inventory over <input class="f w-s" data-key="polimit" placeholder="$15,000" aria-label="Order limit">, including any new shipping container;</li>
+    <li>borrowing money, or granting any lien on Company assets, over <input class="f w-s" data-key="debtlimit" placeholder="$10,000" aria-label="Debt limit">;</li>
+    <li>signing any lease or contract lasting more than 12 months or worth more than <input class="f w-s" data-key="contractlimit" placeholder="$20,000" aria-label="Contract limit">;</li>
+    <li>hiring or firing employees, or setting pay for any Member;</li>
+    <li>approving the annual budget;</li>
+    <li>starting or settling a lawsuit over <input class="f w-s" data-key="suitlimit" placeholder="$10,000" aria-label="Lawsuit limit">;</li>
+    <li>adding a new product line that requires new permits or licenses (for example, alcoholic beverages).</li>
+  </ol>
+  <p><span class="sec">5.5 Unanimous Decisions.</span> The following require a <b>Unanimous Vote</b>:</p>
+  <ol type="a">
+    <li>amending this Agreement or the Articles of Organization;</li>
+    <li>admitting a new Member or issuing any new ownership interest;</li>
+    <li>selling all or substantially all Company assets, or merging, converting, or dissolving the Company;</li>
+    <li>changing the Company&rsquo;s tax classification (including an S-corporation election);</li>
+    <li>asking any Member to sign a personal guarantee (see Article 9);</li>
+    <li>any transaction between the Company and a Member, a Member&rsquo;s relative, or a business a Member owns (the interested Member does not vote);</li>
+    <li>changing a Member&rsquo;s Percentage Interest other than as provided in Sections 3.3, 3.7, or Article 11.</li>
+  </ol>
+  <p><span class="sec">5.6 Inventory Cash Rule.</span> Unless approved by a Unanimous Vote, the Company will not order a new
+  container of inventory until at least <input class="f w-s" data-key="sellthrough" placeholder="50%" aria-label="Sell-through"> of the
+  previous container has been sold <b>and paid for</b> by customers.</p>
+  <p><span class="sec">5.7 Officers and Titles.</span> The Members may give titles (such as President, Treasurer, or Operations
+  Manager) by Majority Vote. Titles do not expand authority beyond this Agreement. Initial roles are in Schedule B.</p>
+  <p><span class="sec">5.8 Banking.</span> All Company money is kept in accounts in the Company&rsquo;s name and never mixed with
+  personal funds. Payments over the Section 5.3 spending limit require approval of two Members. All Members may view every
+  Company account and record at any time.</p>
+
+  <h3>5.9 Member Roles and Responsibilities</h3>
+  <p>Each Member accepts the role below and is responsible for the listed duties. A Member may get help from others, but stays
+  accountable for its area. Roles may be changed by a Majority Vote, recorded in the meeting notes and in Schedule B.</p>
+
+  <div class="role">
+    <p class="role-title">(a) President &amp; Supplier Lead &mdash; <input class="f w-l" data-key="r1" placeholder="Member name" aria-label="President"></p>
+    <ul>
+      <li>Find, vet, and visit (or video-inspect) suppliers in Vietnam; collect samples.</li>
+      <li>Negotiate prices, payment terms, and written supply contracts with quality, indemnity, and insurance terms.</li>
+      <li>Before each order, get proof of the supplier&rsquo;s current FDA food facility registration, and FCE/SID filings for any canned or bottled product.</li>
+      <li>Arrange a pre-shipment quality inspection and confirm product labels meet U.S. rules before goods ship.</li>
+      <li>Place orders only after approval under Sections 5.4 and 5.6; confirm supplier bank details by phone before every payment.</li>
+      <li>Chair the monthly Member meeting and keep the agenda.</li>
+    </ul>
+  </div>
+
+  <div class="role">
+    <p class="role-title">(b) Treasurer &amp; Finance Lead &mdash; <input class="f w-l" data-key="r2" placeholder="Member name" aria-label="Treasurer"></p>
+    <ul>
+      <li>Open and manage Company bank accounts; pay approved bills on time; never pay personal expenses.</li>
+      <li>Keep the books in the Company&rsquo;s accounting software; send invoices and collect customer payments.</li>
+      <li>Share a monthly report: cash, sales, profit, inventory value, and amounts owed by each customer with days late.</li>
+      <li>Prepare the annual budget with the other Leads for approval.</li>
+      <li>Work with the CPA on tax returns, sales tax filings, K-1s, and tax distributions; pay the SCC annual fee.</li>
+      <li>Keep the Company&rsquo;s official records under Article 12.</li>
+    </ul>
+  </div>
+
+  <div class="role">
+    <p class="role-title">(c) Sales &amp; Customer Lead &mdash; <input class="f w-l" data-key="r3" placeholder="Member name" aria-label="Sales lead"></p>
+    <ul>
+      <li>Find and sign up restaurant and store customers; aim to line up buyers before each container arrives.</li>
+      <li>Set prices within the price list approved by Majority Vote; give no discounts beyond approved limits.</li>
+      <li>Apply the customer credit rule in Schedule B; stop deliveries to customers 30+ days late and report them to the Treasurer.</li>
+      <li>Take orders, handle customer questions and complaints, and track sales against monthly targets.</li>
+      <li>Manage samples, sales sheets, website, and marketing within budget.</li>
+    </ul>
+  </div>
+
+  <div class="role">
+    <p class="role-title">(d) Operations &amp; Compliance Lead &mdash; <input class="f w-l" data-key="r4" placeholder="Member name" aria-label="Operations lead"></p>
+    <ul>
+      <li>Manage the customs broker, customs bond, ISF filing (at least 24 hours before loading), FDA prior notice, and duties.</li>
+      <li>Maintain the FSVP plan and supplier records; lead any recall or FDA/customs hold response.</li>
+      <li>Choose and manage the 3PL warehouse; schedule container pickup within free days; count inventory monthly; track expiry dates (first-expired, first-out).</li>
+      <li>Plan and run deliveries (rented trucks or freight); keep vehicles and insurance certificates in order.</li>
+      <li>Keep licenses, permits, and insurance current (Virginia Tax, local business license, VDACS, Section 13.3 insurance) and track all renewal deadlines.</li>
+    </ul>
+  </div>
+
+  <p><span class="sec">5.10 Duties of All Members.</span> Every Member will: attend monthly meetings; help with deliveries, warehouse work,
+  and sales events as scheduled; follow the spending limits and approval rules; respond to other Members within 2 business days;
+  give written notice before any planned absence of more than 2 weeks; and keep Company information confidential.</p>
+  <p><span class="sec">5.11 Backups.</span> Each role has a backup Member named in Schedule B who covers that role during an absence and
+  has access to its passwords, files, and contacts. No role&rsquo;s key information may be held by only one Member.</p>
+  <p><span class="sec">5.12 Authority of Each Role.</span> A Lead may act alone within its area only for matters within the approved budget
+  and below the Section 5.3 spending limit. Anything larger follows Sections 5.3 through 5.6.</p>
+  <p><span class="sec">5.13 Accountability.</span> If any Member does not perform its role or the duties in Section 5.10:</p>
+  <ol type="a">
+    <li>Any two other Members may give written notice describing what is not being done.</li>
+    <li>The Member has <input class="f w-s" data-key="curedays" placeholder="60" aria-label="Cure days"> days to fix it, and the Members will meet to help.</li>
+    <li>If not fixed, a Majority Vote of the other Members may reassign the role, and any pay for that role stops.</li>
+    <li>If the failure continues for <input class="f w-s" data-key="failmonths" placeholder="6" aria-label="Months"> months after notice, a
+    Unanimous Vote of the other Members may treat it as a Triggering Event under Section 11.1(g).</li>
+  </ol>
+  <p class="small">This process is for not doing the work. Fraud, theft, or serious misconduct is handled as removal for cause under Section 11.1(f).</p>
+
+  <!-- ARTICLE 6 -->
+  <h2>Article 6 &mdash; Meetings and Voting</h2>
+  <p><span class="sec">6.1 Regular Meetings.</span> The Members will meet at least <b>monthly</b> to review sales, cash, inventory,
+  and customer payments. Written notes will be kept and shared.</p>
+  <p><span class="sec">6.2 Special Meetings.</span> Any Member may call a meeting with at least <b>3 days&rsquo;</b> notice by email
+  or text, or less if all Members agree. Members may attend by phone or video.</p>
+  <p><span class="sec">6.3 Quorum.</span> Members holding more than 50% of Percentage Interests make a quorum.</p>
+  <p><span class="sec">6.4 Voting.</span> Members vote by Percentage Interest. A vote may also be taken without a meeting by
+  written consent (including email or electronic signature) signed by Members holding at least the required percentage.</p>
+
+  <!-- ARTICLE 7 -->
+  <h2>Article 7 &mdash; Deadlock</h2>
+  <p><span class="sec">7.1 Deadlock.</span> A &ldquo;<b>Deadlock</b>&rdquo; exists when the Members cannot reach a required vote on
+  the same matter at two meetings held at least 7 days apart (for example, a 2&ndash;2 split).</p>
+  <p><span class="sec">7.2 Steps to Break a Deadlock.</span> The Members will take these steps in order:</p>
+  <ol type="a">
+    <li><b>Meet and negotiate</b> in good faith for at least 14 days.</li>
+    <li><b>Tie-breaker</b> (choose one):
+      <label class="opt"><input type="checkbox" data-key="tie-advisor"> an independent advisor named now:
+      <input class="f w-m" data-key="advisor" placeholder="name / role (e.g., CPA)" aria-label="Advisor">, whose decision is binding on that matter;</label>
+      <label class="opt"><input type="checkbox" data-key="tie-rotate"> a rotating deciding vote, held by each Member for one calendar quarter in the order listed in Schedule A;</label>
+      <label class="opt"><input type="checkbox" data-key="tie-mediate"> non-binding mediation in Fairfax County, Virginia, with costs shared equally.</label>
+    </li>
+    <li>If the Deadlock still continues for 60 days and threatens the business, any Member may start the buy-sell process in
+    Section 11.6 or ask for dissolution under Article 15.</li>
+  </ol>
+
+  <!-- ARTICLE 8 -->
+  <h2>Article 8 &mdash; Duties, Conflicts, and Competition</h2>
+  <p><span class="sec">8.1 Standard of Conduct.</span> Each Member will act in good faith and in the best interests of the Company,
+  and will not engage in fraud, gross negligence, or willful misconduct.</p>
+  <p><span class="sec">8.2 Conflicts of Interest.</span> Each Member will promptly disclose any personal interest in a Company
+  transaction. Such transactions require approval under Section 5.5(f).</p>
+  <p><span class="sec">8.3 Business Opportunities.</span> Any opportunity a Member learns of to import, distribute, or sell food,
+  beverages, or restaurant supplies from Vietnam or Southeast Asia belongs to the Company first. The Member must offer it to the
+  Company, which has 30 days to accept or decline.</p>
+  <p><span class="sec">8.4 Non-Competition.</span> While a Member and for <input class="f w-s" data-key="noncompete" placeholder="12" aria-label="Months">
+  months after ceasing to be a Member, no Member will own, manage, or work for a business that imports or distributes the same
+  types of products as the Company to customers in Virginia, Maryland, or the District of Columbia, without a Unanimous Vote of the
+  other Members. Passive ownership of under 2% of a public company is allowed.</p>
+  <p><span class="sec">8.5 Non-Solicitation.</span> For the same period, no Member will solicit the Company&rsquo;s suppliers,
+  customers, or employees to move their business away from the Company.</p>
+  <p><span class="sec">8.6 Confidentiality.</span> Supplier names and prices, customer lists, pricing, and financial information are
+  confidential. No Member will share them outside the Company except as needed for Company business or required by law.
+  This duty continues after a Member leaves.</p>
+  <p><span class="sec">8.7 Time Commitment.</span> Each Member will devote the time described in Schedule B. Members may have other
+  jobs or businesses that do not breach Sections 8.3 through 8.5.</p>
+  <p><span class="sec">8.8 Compensation.</span> No Member receives a salary or guaranteed payment unless approved under Section 5.4(d).
+  Members are reimbursed for reasonable, documented business expenses approved under this Agreement.</p>
+
+  <!-- ARTICLE 9 -->
+  <h2>Article 9 &mdash; Personal Guarantees</h2>
+  <p><span class="sec">9.1 No Obligation.</span> No Member is required to personally guarantee any Company debt, lease, or contract.</p>
+  <p><span class="sec">9.2 Approval and Cap.</span> A Member may sign a personal guarantee for the Company only after a Unanimous Vote
+  approving that specific guarantee, and no single guarantee may exceed
+  <input class="f w-s" data-key="pgcap" placeholder="$25,000" aria-label="Guarantee cap"> without a separate Unanimous Vote.</p>
+  <p><span class="sec">9.3 Sharing the Risk.</span> If a Member pays on an approved guarantee, (a) the Company will reimburse that
+  Member first, and (b) if the Company cannot, each other Member will reimburse the paying Member its share in proportion to
+  Percentage Interests, within 60 days of written demand. This applies whether or not the other Members also signed the guarantee.</p>
+  <p><span class="sec">9.4 Release on Exit.</span> When a Member leaves, the Company and remaining Members will use best efforts to
+  release that Member from any guarantees within 90 days, and will indemnify that Member for any later payment on them.</p>
+
+  <!-- ARTICLE 10 -->
+  <h2>Article 10 &mdash; Transfers of Ownership</h2>
+  <p><span class="sec">10.1 General Restriction.</span> No Member may sell, give, pledge, or otherwise transfer any part of its interest
+  without a Unanimous Vote of the other Members, except as provided in this Article and Article 11. A transfer that breaks this
+  Article is void.</p>
+  <p><span class="sec">10.2 Right of First Refusal.</span> A Member who receives a good-faith written offer from an outside buyer
+  must first offer the interest to the Company, and then to the other Members in proportion to their Percentage Interests, on
+  the same price and terms. They have 30 days to accept. If they decline, the selling Member may sell to the outside buyer within
+  60 days on terms no better for the buyer, but the buyer becomes a Member only with a Unanimous Vote.</p>
+  <p><span class="sec">10.3 Assignees.</span> A person who receives an interest without being admitted as a Member receives only the
+  right to share in distributions and has no vote or management rights.</p>
+  <p><span class="sec">10.4 Estate Planning.</span> A Member may transfer its interest to a revocable trust it controls, if the Member
+  keeps all voting rights and the trust agrees in writing to be bound by this Agreement.</p>
+
+  <!-- ARTICLE 11 -->
+  <h2>Article 11 &mdash; Exit, Buyout, and Triggering Events</h2>
+  <p><span class="sec">11.1 Triggering Events.</span> Each of the following is a Triggering Event for the affected Member:</p>
+  <ol type="a">
+    <li><b>Voluntary withdrawal</b> &mdash; the Member gives at least <b>90 days&rsquo;</b> written notice that it wants to leave;</li>
+    <li><b>Death</b>;</li>
+    <li><b>Disability</b> &mdash; the Member is unable to perform its duties under Schedule B for 180 days in a row;</li>
+    <li><b>Bankruptcy</b> of the Member, or a creditor seizing or attaching the Member&rsquo;s interest;</li>
+    <li><b>Divorce</b>, if any part of the Member&rsquo;s interest is awarded to a former spouse;</li>
+    <li><b>Removal for cause</b> &mdash; by Unanimous Vote of the other Members, for fraud, theft, a felony conviction, or a material breach
+    of this Agreement not cured within 30 days of written notice;</li>
+    <li><b>Not performing duties</b> &mdash; as decided under Section 5.13(d).</li>
+  </ol>
+  <p><span class="sec">11.2 Option to Buy.</span> After a Triggering Event, the Company, and then the other Members in proportion to their
+  Percentage Interests, have the option (and for death or disability, the obligation) to buy the affected Member&rsquo;s entire interest
+  at the purchase price in Section 11.4, by giving written notice within 90 days of learning of the event.</p>
+  <p><span class="sec">11.3 Insurance Funding.</span> If the Company holds life or disability insurance on a Member, the proceeds will be
+  used first to pay the purchase price for that Member&rsquo;s interest.</p>
+  <p><span class="sec">11.4 Purchase Price (Fair Value).</span> The price is the most recent <b>Agreed Value</b> signed by all Members in
+  Schedule C, if signed within the last 12 months. Otherwise, the price is set by an independent business appraiser chosen by
+  Majority Vote of the remaining Members, with the cost shared equally by the Company and the departing Member. For removal for
+  cause, the price is <input class="f w-s" data-key="causediscount" placeholder="70%" aria-label="Discount"> of Fair Value. For not
+  performing duties (Section 11.1(g)), the price is <input class="f w-s" data-key="dutyprice" placeholder="90%" aria-label="Non-performance price"> of Fair Value. For voluntary
+  withdrawal within the first two years after the Effective Date, the price is
+  <input class="f w-s" data-key="earlydiscount" placeholder="80%" aria-label="Early exit price"> of Fair Value.</p>
+  <p><span class="sec">11.5 Payment Terms.</span> The buyer pays at least
+  <input class="f w-s" data-key="downpct" placeholder="20%" aria-label="Down payment"> at closing and the rest in equal monthly payments
+  over no more than <input class="f w-s" data-key="paymonths" placeholder="36" aria-label="Months"> months, with interest at the
+  Applicable Federal Rate, under a promissory note secured by the purchased interest. Closing occurs within 60 days after the price
+  is set.</p>
+  <p><span class="sec">11.6 Buy-Sell Offer (last resort).</span> During a Deadlock under Section 7.2(c), any Member (the &ldquo;Offeror&rdquo;)
+  may give written notice naming a price for 100% of the Company. Each other Member must, within 45 days, either sell its interest to
+  the Offeror at that price (in proportion), or buy the Offeror&rsquo;s interest at that price (in proportion). This encourages a fair price.</p>
+  <p><span class="sec">11.7 After Exit.</span> A departing Member stops having any vote or management rights on the date of the
+  Triggering Event, keeps its duties under Sections 8.4 through 8.6, and returns all Company property and records.</p>
+
+  <!-- ARTICLE 12 -->
+  <h2>Article 12 &mdash; Books, Records, and Taxes</h2>
+  <p><span class="sec">12.1 Records.</span> The Company keeps complete books and records at its principal office or in shared cloud
+  storage, including this Agreement, the Articles of Organization, tax returns, financial statements, meeting notes, supplier and
+  customer contracts, import and FDA/FSVP records, and insurance policies. Every Member may inspect and copy them at any time.</p>
+  <p><span class="sec">12.2 Accounting.</span> The fiscal year is the calendar year. The Company uses the
+  <input class="f w-m" data-key="method" placeholder="accrual" aria-label="Accounting method"> method of accounting (as advised by the CPA)
+  and accounting software chosen by Majority Vote.</p>
+  <p><span class="sec">12.3 Reports.</span> The Treasurer (Schedule B) will share a monthly report of cash, sales, inventory, amounts
+  owed by customers (with how many days late), and bills due.</p>
+  <p><span class="sec">12.4 Tax Classification.</span> The Company will be taxed as a partnership for federal and state income tax
+  purposes. It will file IRS Form 1065 and give each Member a Schedule K-1 within 75 days after year-end, or as soon as practical.</p>
+  <p><span class="sec">12.5 Partnership Representative.</span>
+  <input class="f w-l sync" data-key="taxrep" placeholder="Member name" aria-label="Partnership representative"> is designated the
+  &ldquo;partnership representative&rdquo; under Internal Revenue Code &sect; 6223, and must keep the other Members informed of any tax audit
+  and may not settle one without a Majority Vote.</p>
+
+  <!-- ARTICLE 13 -->
+  <h2>Article 13 &mdash; Liability Protection, Indemnification, and Insurance</h2>
+  <p><span class="sec">13.1 Exculpation.</span> No Member is liable to the Company or other Members for any act taken in good faith
+  within the authority of this Agreement, except for fraud, gross negligence, willful misconduct, a knowing violation of law, or a
+  breach of this Agreement.</p>
+  <p><span class="sec">13.2 Indemnification.</span> The Company will indemnify and hold harmless each Member against losses, claims, and
+  reasonable legal fees arising from Company business, except where Section 13.1 excludes protection. Indemnity is paid only from
+  Company assets; no Member must contribute personally for it.</p>
+  <p><span class="sec">13.3 Required Insurance.</span> The Company will maintain, as long as available on reasonable terms, at least:
+  general and product liability insurance of $1,000,000 per occurrence and $2,000,000 aggregate; property/inventory insurance;
+  marine cargo insurance for every shipment; and hired and non-owned auto coverage if Members drive for Company business.</p>
+  <p><span class="sec">13.4 Separateness.</span> To protect the Members&rsquo; limited liability, the Company will keep its own bank
+  accounts, sign contracts in its own name (&ldquo;[Company], LLC, by [Name], Member&rdquo;), keep proper records, and not pay
+  Members&rsquo; personal expenses.</p>
+
+  <!-- ARTICLE 14 -->
+  <h2>Article 14 &mdash; Regulatory Compliance</h2>
+  <p>The Company will comply with all laws that apply to importing and selling food, including: U.S. Customs and Border Protection
+  entry and bond requirements; U.S. Food and Drug Administration rules, including the Foreign Supplier Verification Program (FSVP),
+  prior notice for each shipment, labeling, and confirming that each supplier holds a current FDA food facility registration;
+  Virginia Department of Agriculture and Consumer Services (VDACS) requirements; Virginia tax registration; local business
+  licenses; and trademark law (the Company will import branded products only from the brand owner or an authorized source).
+  The Member named in Schedule B as Compliance Lead tracks these duties and deadlines.</p>
+
+  <!-- ARTICLE 15 -->
+  <h2>Article 15 &mdash; Dissolution and Winding Up</h2>
+  <p><span class="sec">15.1 Events.</span> The Company dissolves only on (a) a Unanimous Vote; (b) a court order of dissolution under the
+  Act; (c) the sale of all or substantially all its assets; or (d) any other event that requires dissolution under the Act that is not
+  waived as the Act allows. The death, disability, bankruptcy, or withdrawal of a Member does not by itself dissolve the Company.</p>
+  <p><span class="sec">15.2 Winding Up.</span> The Members (or a liquidator chosen by Majority Vote) will sell or collect Company assets
+  and pay, in this order: (a) creditors other than Members, including taxes and customs duties; (b) Member Loans with interest; (c) a
+  reserve for unknown liabilities; and (d) the remaining amount to the Members in proportion to their positive capital account balances.
+  The Company will then file Articles of Cancellation with the SCC.</p>
+
+  <!-- ARTICLE 16 -->
+  <h2>Article 16 &mdash; Disputes</h2>
+  <p><span class="sec">16.1 Negotiation and Mediation.</span> Members will first try to resolve any dispute about this Agreement by
+  meeting in good faith for 30 days, and then by mediation in Fairfax County, Virginia.</p>
+  <p><span class="sec">16.2 Final Resolution (choose one).</span></p>
+  <label class="opt"><input type="checkbox" data-key="disp-arb"> <b>Arbitration.</b> Disputes not resolved by mediation will be settled by
+  binding arbitration in Fairfax County, Virginia, before one arbitrator under the commercial rules of a recognized arbitration provider.
+  Judgment may be entered in any court with jurisdiction.</label>
+  <label class="opt"><input type="checkbox" data-key="disp-court"> <b>Court.</b> Disputes not resolved by mediation will be decided by the
+  state or federal courts located in or serving Fairfax County, Virginia.</label>
+  <p><span class="sec">16.3 Urgent Relief.</span> Any Member may ask a court for an injunction to stop a breach of Article 8 or 10 while
+  a dispute is pending.</p>
+
+  <!-- ARTICLE 17 -->
+  <h2>Article 17 &mdash; General Provisions</h2>
+  <p><span class="sec">17.1 Entire Agreement.</span> This Agreement, with its Schedules and Exhibits, is the entire agreement of the
+  Members about the Company and replaces all earlier discussions.</p>
+  <p><span class="sec">17.2 Amendments.</span> This Agreement may be amended only in a writing signed by all Members.</p>
+  <p><span class="sec">17.3 Governing Law.</span> Virginia law governs this Agreement.</p>
+  <p><span class="sec">17.4 Severability.</span> If any part is held unenforceable, the rest stays in effect, and the unenforceable part is
+  limited only as much as needed to make it enforceable.</p>
+  <p><span class="sec">17.5 Notices.</span> Notices must be in writing and sent to the addresses or emails in Schedule A. Email notice is
+  effective when sent, unless the sender receives a delivery failure.</p>
+  <p><span class="sec">17.6 Binding Effect.</span> This Agreement binds and benefits the Members and their heirs, executors, and permitted
+  successors.</p>
+  <p><span class="sec">17.7 Counterparts and E-Signatures.</span> This Agreement may be signed in counterparts and by electronic signature,
+  each of which is an original.</p>
+  <p><span class="sec">17.8 Independent Advice.</span> Each Member confirms it has had the chance to review this Agreement with its own
+  attorney and tax advisor, and is not relying on any other Member for legal or tax advice.</p>
+
+  <!-- SIGNATURES -->
+  <h2 class="break">Signatures</h2>
+  <p>The Members sign this Operating Agreement of <input class="f w-l sync" data-key="company" placeholder="Company name, LLC" aria-label="Company name">
+  effective as of the Effective Date.</p>
+  <div class="sig-grid">
+    <div class="sig"><div class="line"></div><div class="lbl">Member signature</div>
+      <div class="row">Name: <input class="f sig-in" data-key="m1name" aria-label="Member 1 name"></div><div class="row">Date: <input class="f sig-in" data-key="sig1date" aria-label="Member 1 signing date"></div></div>
+    <div class="sig"><div class="line"></div><div class="lbl">Member signature</div>
+      <div class="row">Name: <input class="f sig-in" data-key="m2name" aria-label="Member 2 name"></div><div class="row">Date: <input class="f sig-in" data-key="sig2date" aria-label="Member 2 signing date"></div></div>
+    <div class="sig"><div class="line"></div><div class="lbl">Member signature</div>
+      <div class="row">Name: <input class="f sig-in" data-key="m3name" aria-label="Member 3 name"></div><div class="row">Date: <input class="f sig-in" data-key="sig3date" aria-label="Member 3 signing date"></div></div>
+    <div class="sig"><div class="line"></div><div class="lbl">Member signature</div>
+      <div class="row">Name: <input class="f sig-in" data-key="m4name" aria-label="Member 4 name"></div><div class="row">Date: <input class="f sig-in" data-key="sig4date" aria-label="Member 4 signing date"></div></div>
+  </div>
+  <p class="small" style="margin-top:22px">Company acknowledgment: <input class="f w-l sync" data-key="company" placeholder="Company name, LLC" aria-label="Company name">,
+  by its Members above.</p>
+
+  <!-- SCHEDULE A -->
+  <h2 class="break">Schedule A &mdash; Members, Contributions, and Ownership</h2>
+  <table>
+    <thead><tr><th style="width:4%">#</th><th style="width:20%">Member name</th><th style="width:28%">Address &amp; email (for notices)</th>
+      <th style="width:13%">Cash contribution</th><th style="width:17%">Other contribution (property, services)</th><th style="width:9%">Due date</th><th style="width:9%">% interest</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><input class="f member-name" data-key="m1name" data-member="1" aria-label="Member 1 name"></td><td><input class="f" data-key="m1addr" aria-label="Member 1 address"></td><td><input class="f" data-key="m1cash" placeholder="$"></td><td><input class="f" data-key="m1other"></td><td><input class="f" data-key="m1due"></td><td><input class="f pct" data-key="m1pct" placeholder="%"></td></tr>
+      <tr><td>2</td><td><input class="f member-name" data-key="m2name" data-member="2" aria-label="Member 2 name"></td><td><input class="f" data-key="m2addr" aria-label="Member 2 address"></td><td><input class="f" data-key="m2cash" placeholder="$"></td><td><input class="f" data-key="m2other"></td><td><input class="f" data-key="m2due"></td><td><input class="f pct" data-key="m2pct" placeholder="%"></td></tr>
+      <tr><td>3</td><td><input class="f member-name" data-key="m3name" data-member="3" aria-label="Member 3 name"></td><td><input class="f" data-key="m3addr" aria-label="Member 3 address"></td><td><input class="f" data-key="m3cash" placeholder="$"></td><td><input class="f" data-key="m3other"></td><td><input class="f" data-key="m3due"></td><td><input class="f pct" data-key="m3pct" placeholder="%"></td></tr>
+      <tr><td>4</td><td><input class="f member-name" data-key="m4name" data-member="4" aria-label="Member 4 name"></td><td><input class="f" data-key="m4addr" aria-label="Member 4 address"></td><td><input class="f" data-key="m4cash" placeholder="$"></td><td><input class="f" data-key="m4other"></td><td><input class="f" data-key="m4due"></td><td><input class="f pct" data-key="m4pct" placeholder="%"></td></tr>
+      <tr class="total"><td></td><td>Total</td><td></td><td><input class="f" data-key="totalcash" placeholder="$"></td><td></td><td></td><td id="pctTotal">100%</td></tr>
+    </tbody>
+  </table>
+  <p class="small no-print" id="pctWarn"></p>
+  <p class="small">Planning reference: the partners&rsquo; startup budget estimates about $75,000 total (about $18,600 per Member if equal),
+  with a cautious case of about $95,000&ndash;$110,000. Final amounts are whatever the Members enter above.</p>
+
+  <!-- SCHEDULE B -->
+  <h2>Schedule B &mdash; Roles, Backups, and Time Commitment</h2>
+  <p class="small">Full duties for each role are in Section 5.9. Names typed here and in Section 5.9 stay in sync.</p>
+  <table>
+    <thead><tr><th style="width:27%">Role</th><th style="width:22%">Member</th><th style="width:22%">Backup member</th><th style="width:15%">Hours / week</th><th>Monthly target or report</th></tr></thead>
+    <tbody>
+      <tr><td><b>President &amp; Supplier Lead</b></td><td><input class="f" data-key="r1"></td><td><input class="f" data-key="b1"></td><td><input class="f" data-key="h1"></td><td><input class="f" data-key="t1" placeholder="e.g., supplier status"></td></tr>
+      <tr><td><b>Treasurer &amp; Finance Lead</b></td><td><input class="f" data-key="r2"></td><td><input class="f" data-key="b2"></td><td><input class="f" data-key="h2"></td><td><input class="f" data-key="t2" placeholder="e.g., monthly report"></td></tr>
+      <tr><td><b>Sales &amp; Customer Lead</b></td><td><input class="f" data-key="r3"></td><td><input class="f" data-key="b3"></td><td><input class="f" data-key="h3"></td><td><input class="f" data-key="t3" placeholder="e.g., $ sales / new customers"></td></tr>
+      <tr><td><b>Operations &amp; Compliance Lead</b></td><td><input class="f" data-key="r4"></td><td><input class="f" data-key="b4"></td><td><input class="f" data-key="h4"></td><td><input class="f" data-key="t4" placeholder="e.g., inventory count"></td></tr>
+    </tbody>
+  </table>
+  <p class="small">Credit rule for customers (recommended): cash on delivery for new customers; 30-day terms only after on-time payments;
+  credit limit of <input class="f w-s" data-key="creditlimit" placeholder="$1,500"> per customer; stop deliveries to any customer 30+ days late.</p>
+
+  <!-- SCHEDULE C -->
+  <h2>Schedule C &mdash; Agreed Value of the Company</h2>
+  <p>The Members agree that the value of 100% of the Company, for purposes of Section 11.4, is as shown below. The Members will update
+  this at least once a year (for example, at the annual meeting). An Agreed Value older than 12 months is not used.</p>
+  <table>
+    <thead><tr><th style="width:20%">Date</th><th style="width:20%">Agreed value (100%)</th><th>Member initials (all four)</th></tr></thead>
+    <tbody>
+      <tr><td><input class="f" data-key="v1d"></td><td><input class="f" data-key="v1v" placeholder="$"></td><td>&nbsp;</td></tr>
+      <tr><td><input class="f" data-key="v2d"></td><td><input class="f" data-key="v2v" placeholder="$"></td><td>&nbsp;</td></tr>
+      <tr><td><input class="f" data-key="v3d"></td><td><input class="f" data-key="v3v" placeholder="$"></td><td>&nbsp;</td></tr>
+    </tbody>
+  </table>
+
+  <!-- EXHIBIT 1 -->
+  <h2 class="break">Exhibit 1 &mdash; Initial Resolutions of the Members</h2>
+  <p>The undersigned, being all of the Members of <input class="f w-l sync" data-key="company" placeholder="Company name, LLC" aria-label="Company name">,
+  adopt the following resolutions by unanimous written consent, effective on the Effective Date:</p>
+  <ol>
+    <li><b>Operating Agreement.</b> The Operating Agreement is adopted.</li>
+    <li><b>Formation ratified.</b> The filing of the Articles of Organization with the SCC, and all reasonable formation expenses paid by any Member
+    (to be reimbursed with receipts), are approved.</li>
+    <li><b>EIN.</b> <input class="f w-m" data-key="einwho" placeholder="Member name"> is authorized to obtain a federal Employer Identification Number from the IRS.</li>
+    <li><b>Bank account.</b> The Company will open a business checking account at <input class="f w-m" data-key="bank" placeholder="bank name">.
+    Authorized signers: <input class="f w-l" data-key="signers" placeholder="names">. Payments over the Section 5.3 limit need two Members&rsquo; approval.</li>
+    <li><b>Registrations.</b> The Members listed in Schedule B are authorized to register the Company with the Virginia Department of Taxation, obtain a
+    Fairfax County (or other local) business license, contact VDACS about food permits, and obtain any FDA registrations required for the Company&rsquo;s facilities.</li>
+    <li><b>Import setup.</b> The Operations &amp; Compliance Lead is authorized to engage a licensed customs broker, obtain a continuous customs bond,
+    obtain a DUNS number, and prepare the Company&rsquo;s FSVP plan.</li>
+    <li><b>Insurance.</b> The Company will obtain the insurance described in Section 13.3 before receiving its first shipment.</li>
+    <li><b>Professionals.</b> The Company may engage <input class="f w-m" data-key="lawyer" placeholder="attorney"> as attorney and
+    <input class="f w-m" data-key="cpa" placeholder="CPA"> as accountant.</li>
+    <li><b>Fiscal year.</b> The Company&rsquo;s fiscal year is the calendar year.</li>
+    <li><b>Annual SCC fee.</b> The Treasurer will pay the SCC annual registration fee by the last day of the Company&rsquo;s anniversary month each year.</li>
+  </ol>
+  <div class="sig-grid">
+    <div class="sig"><div class="line"></div><div class="lbl">Member signature &middot; <span class="name-out" data-member="1"></span></div><div class="row">Date: <input class="f sig-in" data-key="e1date1" aria-label="Member 1 resolutions date"></div></div>
+    <div class="sig"><div class="line"></div><div class="lbl">Member signature &middot; <span class="name-out" data-member="2"></span></div><div class="row">Date: <input class="f sig-in" data-key="e1date2" aria-label="Member 2 resolutions date"></div></div>
+    <div class="sig"><div class="line"></div><div class="lbl">Member signature &middot; <span class="name-out" data-member="3"></span></div><div class="row">Date: <input class="f sig-in" data-key="e1date3" aria-label="Member 3 resolutions date"></div></div>
+    <div class="sig"><div class="line"></div><div class="lbl">Member signature &middot; <span class="name-out" data-member="4"></span></div><div class="row">Date: <input class="f sig-in" data-key="e1date4" aria-label="Member 4 resolutions date"></div></div>
+  </div>
+
+  <!-- EXHIBIT 2 -->
+  <h2 class="break">Exhibit 2 &mdash; Spousal Consent</h2>
+  <p>Each spouse signing below has read the Operating Agreement of <input class="f w-l sync" data-key="company" placeholder="Company name, LLC" aria-label="Company name">,
+  including the transfer restrictions in Article 10 and the buyout terms in Article 11. The spouse agrees that any interest he or she has
+  or may obtain in the Company is bound by the Agreement, including in a divorce or on the Member&rsquo;s death, and that the spouse will
+  not become a Member without a Unanimous Vote. Each spouse had the chance to consult an independent attorney.</p>
+  <p class="small">Complete only for Members who are married. Leave others blank.</p>
+  <div class="sig-grid">
+    <div class="sig"><div class="line"></div><div class="lbl">Spouse of Member: <span class="name-out" data-member="1"></span></div><div class="row">Spouse name: <input class="f sig-in" data-key="sp1name" aria-label="Spouse 1 name"></div><div class="row">Date: <input class="f sig-in" data-key="sp1date" aria-label="Spouse 1 date"></div></div>
+    <div class="sig"><div class="line"></div><div class="lbl">Spouse of Member: <span class="name-out" data-member="2"></span></div><div class="row">Spouse name: <input class="f sig-in" data-key="sp2name" aria-label="Spouse 2 name"></div><div class="row">Date: <input class="f sig-in" data-key="sp2date" aria-label="Spouse 2 date"></div></div>
+    <div class="sig"><div class="line"></div><div class="lbl">Spouse of Member: <span class="name-out" data-member="3"></span></div><div class="row">Spouse name: <input class="f sig-in" data-key="sp3name" aria-label="Spouse 3 name"></div><div class="row">Date: <input class="f sig-in" data-key="sp3date" aria-label="Spouse 3 date"></div></div>
+    <div class="sig"><div class="line"></div><div class="lbl">Spouse of Member: <span class="name-out" data-member="4"></span></div><div class="row">Spouse name: <input class="f sig-in" data-key="sp4name" aria-label="Spouse 4 name"></div><div class="row">Date: <input class="f sig-in" data-key="sp4date" aria-label="Spouse 4 date"></div></div>
+  </div>
+
+  <!-- EXHIBIT 3 -->
+  <h2 class="break">Exhibit 3 &mdash; Opening Checklist (for the Members&rsquo; use; not part of the legal terms)</h2>
+  <table>
+    <thead><tr><th style="width:5%">&#10003;</th><th style="width:44%">Step</th><th style="width:27%">Where</th><th>Who / date</th></tr></thead>
+    <tbody>
+      <tr><td><input type="checkbox" data-key="c1"></td><td>Check name availability</td><td>Virginia SCC &mdash; Clerk&rsquo;s Information System</td><td><input class="f" data-key="cw1"></td></tr>
+      <tr><td><input type="checkbox" data-key="c2"></td><td>Choose registered agent</td><td>Member with VA address, or a service</td><td><input class="f" data-key="cw2"></td></tr>
+      <tr><td><input type="checkbox" data-key="c3"></td><td>File Articles of Organization (~$100); management style must match Section 5.1</td><td>Virginia SCC online</td><td><input class="f" data-key="cw3"></td></tr>
+      <tr><td><input type="checkbox" data-key="c4"></td><td>Attorney reviews this Agreement; all Members sign it and Exhibits 1&ndash;2</td><td>Business attorney</td><td><input class="f" data-key="cw4"></td></tr>
+      <tr><td><input type="checkbox" data-key="c5"></td><td>Get EIN (free)</td><td>IRS.gov</td><td><input class="f" data-key="cw5"></td></tr>
+      <tr><td><input type="checkbox" data-key="c6"></td><td>Open business bank account (bring Articles, EIN, this Agreement)</td><td>Bank</td><td><input class="f" data-key="cw6"></td></tr>
+      <tr><td><input type="checkbox" data-key="c7"></td><td>Register for state taxes (sales and use tax, etc.)</td><td>Virginia Tax</td><td><input class="f" data-key="cw7"></td></tr>
+      <tr><td><input type="checkbox" data-key="c8"></td><td>Local business license (BPOL)</td><td>Fairfax County (or your locality)</td><td><input class="f" data-key="cw8"></td></tr>
+      <tr><td><input type="checkbox" data-key="c9"></td><td>Food permit / inspection if storing food in Virginia</td><td>VDACS</td><td><input class="f" data-key="cw9"></td></tr>
+      <tr><td><input type="checkbox" data-key="c10"></td><td>Insurance in place (Section 13.3)</td><td>Commercial insurance broker</td><td><input class="f" data-key="cw10"></td></tr>
+      <tr><td><input type="checkbox" data-key="c11"></td><td>Customs broker, continuous customs bond, DUNS number, FSVP plan</td><td>Licensed customs broker</td><td><input class="f" data-key="cw11"></td></tr>
+      <tr><td><input type="checkbox" data-key="c12"></td><td>Confirm supplier&rsquo;s FDA registration is renewed (window Oct 1&ndash;Dec 31, 2026)</td><td>Supplier / FDA</td><td><input class="f" data-key="cw12"></td></tr>
+      <tr><td><input type="checkbox" data-key="c13"></td><td>Pay SCC annual registration fee ($50) every year</td><td>Virginia SCC</td><td><input class="f" data-key="cw13"></td></tr>
+    </tbody>
+  </table>
+  <p class="small">Federal beneficial ownership (BOI) reporting to FinCEN is not required for U.S.-formed LLCs under FinCEN&rsquo;s August 2026 final rule.
+  Confirm current requirements at filing time.</p>
+
+  <p class="small center no-print" style="margin-top:30px">Draft prepared October 2026 as a template for attorney review. Not legal, tax, or financial advice.</p>
+</main>
+
+<script>
+(function () {
+  var FIELDS = "llc-operating-agreement-v1";      // typed blanks and checkboxes
+  var TEXT = "llc-operating-agreement-text-v1";   // edited wording (HTML of the document)
+  var doc = document.getElementById("doc");
+  var ORIGINAL = doc.innerHTML;                   // wording as shipped in this file
+
+  function load(key, fallback) {
+    try { var v = localStorage.getItem(key); return v === null ? fallback : v; } catch (e) { return fallback; }
+  }
+  function store(key, val) {
+    try { if (val === null) localStorage.removeItem(key); else localStorage.setItem(key, val); } catch (e) {}
+  }
+
+  var data = {};
+  try { data = JSON.parse(load(FIELDS, "{}")) || {}; } catch (e) { data = {}; }
+
+  // In-page confirm and message (some browsers block pop-up dialogs, which silently cancels them)
+  var askOverlay = document.getElementById("askOverlay");
+  var askPending = null;
+  function ask(msg, okLabel) {
+    return new Promise(function (resolve) {
+      document.getElementById("askMsg").textContent = msg;
+      document.getElementById("askYes").textContent = okLabel || "Delete";
+      askPending = resolve;
+      askOverlay.classList.add("show");
+      document.getElementById("askYes").focus();
+    });
+  }
+  function answer(v) { askOverlay.classList.remove("show"); var r = askPending; askPending = null; if (r) r(v); }
+  document.getElementById("askYes").addEventListener("click", function () { answer(true); });
+  document.getElementById("askNo").addEventListener("click", function () { answer(false); });
+  askOverlay.addEventListener("mousedown", function (e) { if (e.target === askOverlay) answer(false); });
+  document.addEventListener("keydown", function (e) {
+    if (!askOverlay.classList.contains("show")) return;
+    if (e.key === "Escape") { e.preventDefault(); answer(false); }
+    else if (e.key === "Enter") { e.preventDefault(); answer(true); }
+  }, true);
+  function tell(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(tell.t); tell.t = setTimeout(function () { t.classList.remove("show"); }, 3200);
+  }
+
+  // Restore edited wording first, then wire up the fields inside it.
+  var savedText = load(TEXT, null);
+  if (savedText && savedText !== ORIGINAL) {
+    doc.innerHTML = savedText;
+    document.body.classList.add("has-edits");
+  }
+
+  function fields() { return doc.querySelectorAll("[data-key]"); }
+
+  function bindFields() {
+    fields().forEach(function (el) {
+      var k = el.getAttribute("data-key");
+      if (data[k] !== undefined) {
+        if (el.type === "checkbox") el.checked = !!data[k]; else el.value = data[k];
+      }
+      if (el.dataset.bound) return;
+      el.dataset.bound = "1";
+      el.addEventListener("input", function () { onField(el); });
+      el.addEventListener("change", function () { onField(el); });
+    });
+  }
+
+  function onField(el) {
+    var k = el.getAttribute("data-key");
+    data[k] = el.type === "checkbox" ? el.checked : el.value;
+    if (el.type !== "checkbox") {
+      doc.querySelectorAll('[data-key="' + k + '"]').forEach(function (o) { if (o !== el) o.value = el.value; });
+    }
+    store(FIELDS, JSON.stringify(data));
+    refresh();
+  }
+
+  function refresh() {
+    for (var i = 1; i <= 4; i++) {
+      var src = doc.querySelector('.member-name[data-member="' + i + '"]');
+      var name = src && src.value ? src.value : "";
+      doc.querySelectorAll('.name-out[data-member="' + i + '"]').forEach(function (o) { o.textContent = name; });
+    }
+    var total = 0, any = false;
+    doc.querySelectorAll(".pct").forEach(function (p) {
+      var v = parseFloat(String(p.value).replace(/[^0-9.]/g, ""));
+      if (!isNaN(v)) { total += v; any = true; }
+    });
+    var cell = document.getElementById("pctTotal");
+    var warn = document.getElementById("pctWarn");
+    if (cell) cell.textContent = any ? (Math.round(total * 100) / 100) + "%" : "100%";
+    if (warn) {
+      warn.textContent = any && Math.abs(total - 100) > 0.01 ? "Ownership adds up to " + cell.textContent + " — it must total 100%." : "";
+    }
+  }
+
+  // ---- Wording editor ----
+  var editBtn = document.getElementById("editBtn");
+  var saveTimer = null;
+
+  function cleanHTML() {
+    // Save the document without editor-only attributes or auto-filled names.
+    var clone = doc.cloneNode(true);
+    clone.querySelectorAll("[data-bound]").forEach(function (e) { e.removeAttribute("data-bound"); });
+    clone.querySelectorAll("[contenteditable]").forEach(function (e) { e.removeAttribute("contenteditable"); });
+    clone.querySelectorAll(".col-sel, .row-sel").forEach(function (e) {
+      e.classList.remove("col-sel", "row-sel"); if (!e.getAttribute("class")) e.removeAttribute("class");
+    });
+    clone.querySelectorAll(".name-out").forEach(function (e) { e.textContent = ""; });
+    var t = clone.querySelector("#pctTotal"); if (t) t.textContent = "100%";
+    var w = clone.querySelector("#pctWarn"); if (w) { w.textContent = ""; w.removeAttribute("style"); }
+    clone.removeAttribute("contenteditable");
+    return clone.innerHTML;
+  }
+
+  function saveText() {
+    var html = cleanHTML();
+    var original = (function () { var d = document.createElement("div"); d.innerHTML = ORIGINAL; return d.innerHTML; })();
+    if (html === original) { store(TEXT, null); document.body.classList.remove("has-edits"); }
+    else { store(TEXT, html); document.body.classList.add("has-edits"); }
+  }
+
+  function setEditing(on) {
+    doc.setAttribute("contenteditable", on ? "true" : "false");
+    // Keep the fill-in blanks and checkboxes working normally while editing.
+    doc.querySelectorAll("input").forEach(function (i) { i.setAttribute("contenteditable", "false"); });
+    document.body.classList.toggle("editing", on);
+    editBtn.textContent = on ? "Done editing" : "Edit text";
+    editBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    if (!on) { saveText(); if (typeof hideTools === "function") hideTools(); }
+  }
+
+  editBtn.addEventListener("click", function () { setEditing(!document.body.classList.contains("editing")); });
+
+  doc.addEventListener("input", function (e) {
+    if (!document.body.classList.contains("editing")) return;
+    if (e.target && e.target.tagName === "INPUT") return;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveText, 600);
+  });
+
+  // Paste as plain text so formatting from Word or email doesn't break the layout.
+  doc.addEventListener("paste", function (e) {
+    if (!document.body.classList.contains("editing")) return;
+    if (e.target && e.target.tagName === "INPUT") return;
+    e.preventDefault();
+    var text = (e.clipboardData || window.clipboardData).getData("text/plain");
+    document.execCommand("insertText", false, text);
+  });
+
+  document.getElementById("boldBtn").addEventListener("mousedown", function (e) { e.preventDefault(); snapshot(); document.execCommand("bold"); });
+  // ---- Undo / redo history (wording, structure and the blanks inside changed parts) ----
+  var past = [], future = [], lastTyping = 0;
+  function currentState() { return { html: cleanHTML(), data: JSON.stringify(data) }; }
+  function snapshot() {
+    var st = currentState();
+    var top = past[past.length - 1];
+    if (top && top.html === st.html && top.data === st.data) return;
+    past.push(st); if (past.length > 150) past.shift();
+    future = [];
+  }
+  function restore(st) {
+    doc.innerHTML = st.html;
+    data = JSON.parse(st.data); store(FIELDS, st.data);
+    bindFields(); refresh();
+    if (document.body.classList.contains("editing")) {
+      doc.querySelectorAll("input").forEach(function (i) { i.setAttribute("contenteditable", "false"); });
+    }
+    lastNode = null;
+    clearTimeout(saveTimer); saveText();
+  }
+  function flash(msg) {
+    var h = document.getElementById("hint"); if (!h) return;
+    var old = h.getAttribute("data-old") || h.innerHTML;
+    h.setAttribute("data-old", old); h.textContent = msg;
+    clearTimeout(flash.t); flash.t = setTimeout(function () { h.innerHTML = old; }, 1800);
+  }
+  function undo() {
+    var now = currentState();
+    while (past.length) {
+      var prev = past.pop();
+      if (prev.html !== now.html || prev.data !== now.data) { future.push(now); restore(prev); flash("Undone."); return; }
+    }
+    flash("Nothing more to undo.");
+  }
+  function redo() {
+    if (!future.length) { flash("Nothing to redo."); return; }
+    past.push(currentState()); restore(future.pop()); flash("Redone.");
+  }
+  document.getElementById("undoBtn").addEventListener("mousedown", function (e) { e.preventDefault(); undo(); });
+  document.getElementById("redoBtn").addEventListener("mousedown", function (e) { e.preventDefault(); redo(); });
+  // Snapshot before typing starts (grouped: a pause of 1 second starts a new undo step)
+  doc.addEventListener("beforeinput", function (e) {
+    if (!document.body.classList.contains("editing")) return;
+    if (e.target && e.target.tagName === "INPUT") return;
+    var t = Date.now(); if (t - lastTyping > 1000) snapshot(); lastTyping = t;
+  });
+  document.addEventListener("keydown", function (e) {
+    if (!document.body.classList.contains("editing")) return;
+    if (e.target && e.target.tagName === "INPUT") return;   // fill-in boxes keep their own undo
+    var k = e.key.toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && k === "z" && !e.shiftKey) { e.preventDefault(); undo(); }
+    else if ((e.ctrlKey || e.metaKey) && (k === "y" || (k === "z" && e.shiftKey))) { e.preventDefault(); redo(); }
+  });
+
+  document.getElementById("resetTextBtn").addEventListener("click", function () {
+    ask("Undo ALL wording changes and go back to the original text?\n\nYour typed blanks are kept, and you can still press Undo afterwards.", "Reset wording").then(function (ok) {
+      if (!ok) return;
+      snapshot();
+      doc.innerHTML = ORIGINAL;
+      store(TEXT, null);
+      document.body.classList.remove("has-edits");
+      bindFields(); refresh();
+      setEditing(document.body.classList.contains("editing"));
+      tell("Wording reset to the original.");
+    });
+  });
+
+  // ---- Insert / remove articles, sections and bullets ----
+  var lastNode = null;  // where the cursor was last inside the document
+  document.addEventListener("selectionchange", function () {
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    var n = sel.anchorNode;
+    if (n && doc.contains(n)) lastNode = n.nodeType === 1 ? n : n.parentElement;
+  });
+  doc.addEventListener("mousedown", function (e) { if (doc.contains(e.target)) lastNode = e.target; }, true);
+  doc.addEventListener("focusin", function (e) { if (doc.contains(e.target)) lastNode = e.target; });
+
+  function editingGuard() {
+    if (!document.body.classList.contains("editing")) setEditing(true);
+  }
+  function placeCaret(el) {
+    var r = document.createRange(); r.selectNodeContents(el);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    el.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+  function articleNumbers() {
+    return Array.prototype.map.call(doc.querySelectorAll("h2"), function (h) {
+      var m = /^\s*Article\s+(\d+)/i.exec(h.textContent); return m ? +m[1] : 0;
+    });
+  }
+  function articleOf(el) {
+    // number of the article heading that comes before el in the document
+    var num = 0;
+    doc.querySelectorAll("h2").forEach(function (h) {
+      if (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING) {
+        var m = /^\s*Article\s+(\d+)/i.exec(h.textContent); num = m ? +m[1] : 0;
+      }
+    });
+    return num;
+  }
+  function blockAt(node) {
+    if (!node || !doc.contains(node)) return null;
+    return node.closest("li, p, h2, h3, label.opt, table, .sig, .role, .sig-grid, ul, ol, .notice, .howto");
+  }
+  function afterSave() { clearTimeout(saveTimer); saveText(); }
+
+  document.getElementById("addArticleBtn").addEventListener("mousedown", function (e) {
+    e.preventDefault(); editingGuard(); snapshot();
+    var next = Math.max.apply(null, articleNumbers().concat([0])) + 1;
+    var sig = Array.prototype.find.call(doc.querySelectorAll("h2"), function (h) { return /^\s*Signatures/i.test(h.textContent); });
+    var h = document.createElement("h2");
+    h.innerHTML = "Article " + next + " &mdash; <span class=\"new-title\">New Article Title</span>";
+    var p = document.createElement("p");
+    p.innerHTML = "<span class=\"sec\">" + next + ".1 Section Title.</span> Write the text of this section here.";
+    if (sig) { sig.parentNode.insertBefore(h, sig); sig.parentNode.insertBefore(p, sig); }
+    else { doc.appendChild(h); doc.appendChild(p); }
+    placeCaret(h.querySelector(".new-title"));
+    afterSave();
+  });
+
+  document.getElementById("addSectionBtn").addEventListener("mousedown", function (e) {
+    e.preventDefault(); editingGuard(); snapshot();
+    var b = blockAt(lastNode);
+    if (b && b.tagName === "LI") b = b.closest("ul, ol");
+    if (b && b.tagName === "LABEL") b = b.closest(".role") || b;
+    if (!b) { tell("Click inside the article where the new section should go, then press + Section."); return; }
+    var art = articleOf(b) || "__";
+    var max = 0;
+    doc.querySelectorAll(".sec, h3").forEach(function (s) {
+      var m = new RegExp("^\\s*" + art + "\\.(\\d+)").exec(s.textContent);
+      if (m) max = Math.max(max, +m[1]);
+    });
+    var p = document.createElement("p");
+    p.innerHTML = "<span class=\"sec\">" + art + "." + (max + 1) + " <span class=\"new-title\">Section Title</span>.</span> Write the text of this section here.";
+    b.parentNode.insertBefore(p, b.nextSibling);
+    placeCaret(p.querySelector(".new-title"));
+    afterSave();
+  });
+
+  document.getElementById("addBulletBtn").addEventListener("mousedown", function (e) {
+    e.preventDefault(); editingGuard(); snapshot();
+    var b = blockAt(lastNode);
+    if (!b) { tell("Click where the new bullet should go, then press + Bullet."); return; }
+    var li = document.createElement("li");
+    li.textContent = "New point.";
+    if (b.tagName === "LI") b.parentNode.insertBefore(li, b.nextSibling);
+    else if (b.tagName === "UL" || b.tagName === "OL") b.appendChild(li);
+    else {
+      var ul = document.createElement("ul"); ul.appendChild(li);
+      b.parentNode.insertBefore(ul, b.nextSibling);
+    }
+    placeCaret(li);
+    afterSave();
+  });
+
+  document.getElementById("addSigBtn").addEventListener("mousedown", function (e) {
+    e.preventDefault(); editingGuard();
+    var node = lastNode && doc.contains(lastNode) ? lastNode : null;
+    var src = node && node.closest(".sig");
+    if (!src) { var g = node && node.closest(".sig-grid"); src = g && g.querySelector(".sig:last-of-type"); }
+    if (!src) { tell("Click inside a signature block first, then press + Signature."); return; }
+    snapshot();
+    var copy = src.cloneNode(true);
+    copy.querySelectorAll("input").forEach(function (i) {
+      i.setAttribute("data-key", newKey("sig")); i.removeAttribute("data-bound");
+      i.value = ""; i.removeAttribute("value");
+      if (document.body.classList.contains("editing")) i.setAttribute("contenteditable", "false");
+    });
+    copy.querySelectorAll(".name-out").forEach(function (o) { o.classList.remove("name-out"); o.removeAttribute("data-member"); o.textContent = "________"; });
+    src.parentNode.insertBefore(copy, src.nextSibling);
+    bindFields(); refresh(); afterSave();
+    var first = copy.querySelector("input"); if (first) first.focus();
+    tell("Signature block added. Press Undo to remove it.");
+  });
+
+  document.getElementById("removeBtn").addEventListener("mousedown", function (e) {
+    e.preventDefault(); editingGuard(); snapshot();
+    var b = blockAt(lastNode);
+    if (!b) { tell("Click inside the paragraph, heading or bullet you want to delete, then press Remove."); return; }
+    var label = b.tagName === "LI" ? "this bullet point" : b.tagName === "H2" ? "this article heading" :
+                b.tagName === "H3" ? "this heading" : b.tagName === "TABLE" ? "this whole table" :
+                b.classList.contains("sig") ? "this signature block" : b.classList.contains("sig-grid") ? "these signature lines" : b.classList.contains("role") ? "this whole role" : "this paragraph";
+    var preview = b.textContent.replace(/\s+/g, " ").trim().slice(0, 80);
+    ask("Delete " + label + "?\n\n\u201c" + preview + "\u2026\u201d\n\nYou can undo with Ctrl+Z.").then(function (ok) {
+      if (!ok) return;
+      var list = b.tagName === "LI" ? b.parentNode : null;
+      b.remove();
+      if (list && !list.querySelector("li")) list.remove();
+      lastNode = null;
+      refresh(); afterSave();
+      tell("Deleted. Press Undo to bring it back.");
+    });
+  });
+
+  // ---- Table rows and columns ----
+  var keySeq = 0;
+  function newKey(base) { keySeq++; return (base || "cell") + "-x" + Date.now().toString(36) + keySeq; }
+  function cellAt(node) { return node && doc.contains(node) ? node.closest("td, th") : null; }
+  function needCell() {
+    var c = cellAt(lastNode);
+    if (!c) tell("Click inside a table cell first, then use the Table buttons.");
+    return c;
+  }
+  function blankInput(base) {
+    var i = document.createElement("input");
+    i.className = "f"; i.setAttribute("data-key", newKey(base));
+    if (document.body.classList.contains("editing")) i.setAttribute("contenteditable", "false");
+    return i;
+  }
+  function afterTable() { bindFields(); refresh(); afterSave(); }
+
+  // Each action works on a given cell and returns a cell to select afterwards (or null).
+  function addRow(c, below) {
+    var tr = c.closest("tr"), table = tr.closest("table");
+    var tbody = table.tBodies[0] || table;
+    var inHead = tr.parentNode.tagName === "THEAD";
+    var src = inHead ? tbody.rows[0] : tr;
+    if (!src) return null;
+    var row = src.cloneNode(true);
+    row.classList.remove("total");
+    row.querySelectorAll("td, th").forEach(function (cell) {
+      cell.removeAttribute("id");
+      var inp = cell.querySelector("input");
+      if (inp) {
+        var k = inp.getAttribute("data-key") || "";
+        inp.setAttribute("data-key", newKey(k.replace(/\d+.*$/, "") || "cell"));
+        inp.removeAttribute("data-bound"); inp.removeAttribute("data-member");
+        inp.classList.remove("member-name");
+        if (inp.type === "checkbox") { inp.checked = false; inp.removeAttribute("checked"); }
+        else { inp.value = ""; inp.removeAttribute("value"); }
+      } else {
+        cell.textContent = "";
+      }
+    });
+    var first = row.cells[0];
+    if (first && !first.querySelector("input")) {
+      var nums = Array.prototype.map.call(tbody.rows, function (r) { return parseInt(r.cells[0] && r.cells[0].textContent, 10) || 0; });
+      var maxN = Math.max.apply(null, nums.concat([0]));
+      first.textContent = maxN ? String(maxN + 1) : "";
+    }
+    if (inHead) tbody.insertBefore(row, tbody.firstChild);
+    else if (tr.classList.contains("total") || !below) tr.parentNode.insertBefore(row, tr);   // never below the Total row
+    else tr.parentNode.insertBefore(row, tr.nextSibling);
+    afterTable();
+    return row.cells[Math.min(c.cellIndex, row.cells.length - 1)];
+  }
+
+  function delRow(c) {
+    var tr = c.closest("tr");
+    if (tr.parentNode.tagName === "THEAD") { tell("That is the header row. Use the column buttons to remove columns, or edit the header text."); return null; }
+    if (tr.classList.contains("total")) { tell("The Total row can't be removed."); return null; }
+    var preview = tr.textContent.replace(/\s+/g, " ").trim().slice(0, 70) || "(empty row)";
+    ask("Delete this row?\n\n\u201c" + preview + "\u201d").then(function (ok) {
+      if (!ok) return;
+      tr.querySelectorAll("[data-key]").forEach(function (i) { delete data[i.getAttribute("data-key")]; });
+      store(FIELDS, JSON.stringify(data));
+      tr.remove(); lastNode = null;
+      afterTable(); hideTools();
+      tell("Row deleted. Press Undo to bring it back.");
+    });
+    return null;
+  }
+
+  function addCol(c, right) {
+    var idx = c.cellIndex, table = c.closest("table"), head = null;
+    Array.prototype.forEach.call(table.rows, function (r) {
+      var ref = r.cells[idx];
+      var isHead = r.parentNode.tagName === "THEAD";
+      var cell = document.createElement(isHead ? "th" : "td");
+      if (isHead) { cell.textContent = "New column"; head = cell; }
+      else if (!r.classList.contains("total")) cell.appendChild(blankInput("col"));
+      if (right) r.insertBefore(cell, ref ? ref.nextSibling : null);
+      else r.insertBefore(cell, ref || null);
+    });
+    afterTable();
+    if (head) placeCaret(head);
+    return head;
+  }
+
+  function delCol(c) {
+    var idx = c.cellIndex, table = c.closest("table");
+    if (table.rows[0].cells.length <= 1) { tell("A table needs at least one column."); return null; }
+    var title = (table.tHead && table.tHead.rows[0].cells[idx]) ? table.tHead.rows[0].cells[idx].textContent.trim() : "this column";
+    ask("Delete the column \u201c" + title + "\u201d and everything typed in it?").then(function (ok) {
+      if (!ok) return;
+      Array.prototype.forEach.call(table.rows, function (r) {
+        var cell = r.cells[idx]; if (!cell) return;
+        cell.querySelectorAll("[data-key]").forEach(function (i) { delete data[i.getAttribute("data-key")]; });
+        cell.remove();
+      });
+      store(FIELDS, JSON.stringify(data));
+      lastNode = null;
+      afterTable(); hideTools();
+      tell("Column deleted. Press Undo to bring it back.");
+    });
+    return null;
+  }
+
+  // Top-bar Table buttons (act on the last clicked cell)
+  function topBtn(id, fn) {
+    document.getElementById(id).addEventListener("mousedown", function (e) {
+      e.preventDefault(); editingGuard();
+      var c = needCell(); if (!c) return;
+      snapshot(); selectCell(fn(c));
+    });
+  }
+  topBtn("addRowBtn", function (c) { return addRow(c, true); });
+  topBtn("delRowBtn", delRow);
+  topBtn("addColBtn", function (c) { return addCol(c, true); });
+  topBtn("delColBtn", delCol);
+
+  // ---- Floating cell toolbar: appears on the table cell you click ----
+  var selCell = null;
+  var tools = document.createElement("div");
+  tools.id = "cellTools"; tools.className = "no-print"; tools.setAttribute("role", "toolbar"); tools.setAttribute("aria-label", "Table cell tools");
+  tools.innerHTML =
+    '<span class="ct-group"><span class="ct-label">Column</span>' +
+    '<button type="button" data-act="colLeft" title="Insert a column to the left">+ Left</button>' +
+    '<button type="button" data-act="colRight" title="Insert a column to the right">+ Right</button>' +
+    '<button type="button" data-act="colDel" class="ct-danger" title="Delete this column">Delete</button></span>' +
+    '<span class="ct-group"><span class="ct-label">Row</span>' +
+    '<button type="button" data-act="rowAbove" title="Insert a row above">+ Above</button>' +
+    '<button type="button" data-act="rowBelow" title="Insert a row below">+ Below</button>' +
+    '<button type="button" data-act="rowDel" class="ct-danger" title="Delete this row">Delete</button></span>';
+  document.body.appendChild(tools);
+
+  function clearSelMarks() {
+    doc.querySelectorAll(".col-sel, .row-sel").forEach(function (x) { x.classList.remove("col-sel", "row-sel"); });
+  }
+  function positionTools() {
+    if (!selCell || !doc.contains(selCell)) { hideTools(); return; }
+    var table = selCell.closest("table");
+    var tr = table.getBoundingClientRect(), cr = selCell.getBoundingClientRect();
+    var top = window.scrollY + tr.top - tools.offsetHeight - 8;
+    var left = window.scrollX + Math.max(8, Math.min(cr.left, window.innerWidth - tools.offsetWidth - 8));
+    var bar = document.querySelector(".toolbar");
+    var minTop = window.scrollY + (bar ? bar.getBoundingClientRect().bottom : 0) + 4;
+    if (top < minTop) top = Math.max(minTop, window.scrollY + cr.top - tools.offsetHeight - 6);
+    tools.style.top = top + "px"; tools.style.left = left + "px";
+  }
+  function selectCell(c) {
+    clearSelMarks();
+    if (!c || !doc.contains(c) || !document.body.classList.contains("editing")) { hideTools(); return; }
+    selCell = c;
+    var table = c.closest("table"), idx = c.cellIndex;
+    Array.prototype.forEach.call(table.rows, function (r) { if (r.cells[idx]) r.cells[idx].classList.add("col-sel"); });
+    c.closest("tr").classList.add("row-sel");
+    var isHead = c.closest("tr").parentNode.tagName === "THEAD";
+    var isTotal = c.closest("tr").classList.contains("total");
+    tools.querySelector('[data-act="rowDel"]').disabled = isHead || isTotal;
+    tools.querySelector('[data-act="rowBelow"]').disabled = isTotal;
+    tools.classList.add("show");
+    positionTools();
+  }
+  function hideTools() { selCell = null; tools.classList.remove("show"); clearSelMarks(); }
+
+  doc.addEventListener("mousedown", function (e) {
+    if (!document.body.classList.contains("editing")) return;
+    var c = cellAt(e.target);
+    if (c) selectCell(c); else hideTools();
+  });
+  doc.addEventListener("focusin", function (e) {
+    if (!document.body.classList.contains("editing")) return;
+    var c = cellAt(e.target); if (c) selectCell(c);
+  });
+  document.addEventListener("mousedown", function (e) {
+    if (!tools.contains(e.target) && !doc.contains(e.target) && !e.target.closest(".toolbar")) hideTools();
+  });
+  window.addEventListener("scroll", positionTools, { passive: true });
+  window.addEventListener("resize", positionTools);
+
+  tools.addEventListener("mousedown", function (e) {
+    var b = e.target.closest("button[data-act]");
+    e.preventDefault();
+    if (!b || b.disabled || !selCell || !doc.contains(selCell)) return;
+    var c = selCell, act = b.getAttribute("data-act"), next = null;
+    snapshot();
+    if (act === "colLeft") next = addCol(c, false);
+    else if (act === "colRight") next = addCol(c, true);
+    else if (act === "colDel") next = delCol(c);
+    else if (act === "rowAbove") next = addRow(c, false);
+    else if (act === "rowBelow") next = addRow(c, true);
+    else if (act === "rowDel") next = delRow(c);
+    if (next) selectCell(next); else hideTools();
+  });
+
+  // ---- Download a copy with edits and entries baked in ----
+  document.getElementById("downloadBtn").addEventListener("click", function () {
+    if (document.body.classList.contains("editing")) saveText();
+    var page = document.documentElement.cloneNode(true);
+    var cdoc = page.querySelector("#doc");
+    var live = doc.querySelectorAll("input");
+    cdoc.querySelectorAll("input").forEach(function (inp, i) {
+      var src = live[i];
+      if (!src) return;
+      if (src.type === "checkbox") { if (src.checked) inp.setAttribute("checked", ""); else inp.removeAttribute("checked"); }
+      else inp.setAttribute("value", src.value);
+      inp.removeAttribute("data-bound");
+      inp.removeAttribute("contenteditable");
+    });
+    cdoc.removeAttribute("contenteditable");
+    page.querySelector("body").classList.remove("editing", "has-edits");
+    var html = "<!doctype html>\n" + page.outerHTML;
+    var blob = new Blob([html], { type: "text/html" });
+    var a = document.createElement("a");
+    var d = new Date();
+    a.href = URL.createObjectURL(blob);
+    a.download = "LLC_Operating_Agreement_" + d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" +
+                 String(d.getDate()).padStart(2, "0") + ".html";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+  });
+
+  // ---- Print and clear ----
+  document.getElementById("printBtn").addEventListener("click", function () {
+    if (document.body.classList.contains("editing")) setEditing(false);
+    window.print();
+  });
+  document.getElementById("clearBtn").addEventListener("click", function () {
+    ask("Clear everything typed in the blanks?\n\nWording changes are kept.", "Clear entries").then(function (ok) {
+      if (!ok) return;
+      if (typeof snapshot === "function") snapshot();
+      data = {}; store(FIELDS, JSON.stringify(data));
+      fields().forEach(function (el) { if (el.type === "checkbox") el.checked = false; else el.value = ""; });
+      refresh();
+      tell("Entries cleared.");
+    });
+  });
+
+  bindFields();
+  refresh();
+})();
+</script>
+</body>
+</html>
